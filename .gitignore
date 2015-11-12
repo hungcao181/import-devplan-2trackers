@@ -28,4 +28,4 @@ src/public/app/**/*.js
 src/public/app/**/*.js.map
 
 *.log
-src/recret.*
+*.secret
