@@ -24,6 +24,7 @@
   "homepage": "https://github.com/hungcao181/import-issues-2repo#readme",
   "dependencies": {
     "moment": "^2.10.6",
-    "node-gitlab": "^1.2.1"
+    "node-gitlab": "^1.2.1",
+    "pivotaltracker": "^0.1.4"
   }
 }
