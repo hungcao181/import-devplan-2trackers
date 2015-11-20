@@ -1,28 +1,45 @@
+'use strict';
 var fs = require('fs');
-var filepath = './src/data.js';
+var filepath = './src/data.txt';
 var epicColor = "#5CB85C";
 // var secret = require('./client.secret');
 
 var client = require('./pivotaltracker-service')
 // var projectId = secret.pivotaltracker_projectID;
 // console.log(client);
+var async = require('async');
+var jQuery = require('jquery-deferred');
+
 loadData();
+
+// loadDataSeries();
+
+function loadDataSeries() {
+  fs.readFile(filepath, {'encoding': 'utf8'}, function (err, data) {
+    if (err) throw err;
+    client.addStories(data);        
+  });  
+}
+
+loadDataNew() {
+    
+}
 
 function loadData() {
   fs.readFile(filepath, {'encoding': 'utf8'}, function (err, data) {
     if (err) throw err;
-    
     var sprints = data.split('SPRINT:').filter(function(s) {return s != ''});
-    
-    sprints.forEach(function(sprint, index) {
-      // console.log(sprint);
-      if (index == 0) {
-        client.addMilestone(client.id, sprint, index, processMilestoneData);  
-      }      
-      
-      // console.log(epics);
-      // getStories(sprint);
-    })
+    async.each(
+        sprints, 
+        function (sprint, done) {
+            jQuery.when(client.addMilestone(client.id, getSprintIndex(sprint), done)) {
+                processMilestoneData(client.id, sprint, null);
+            }
+        },
+        function(results) {
+            console.log('added milestone ',results);
+        }
+    )
   });  
 }
 
@@ -33,26 +50,21 @@ function getSprintIndex(sprint) {
 }
 
 function processMilestoneData(projectID, sprintData, milestoneID) {
-      var epics = sprintData.split('EPIC:').filter(function(e) {
-        return e.slice(0,1) != "#" && e != '';
-      });
-      epics.forEach(function(epic) {
+    var epics = sprintData.split('EPIC:').filter(function(e) {
+    return e.slice(0,1) != "#" && e != '';
+    });
+    var funcArrays = [];
+    epics.forEach(function(epic) {
         var name = getEpicName(epic);
-        // epic.split(/\r?\n/).forEach(function(story, storyIndex) {
-        //   if (storyIndex == 0) {
-        //     var currentEpic = story;
-        //     console.log('Adding Epic:', story);
-            
-        //   }
-        //   if (storyIndex > 0) {
-        //     console.log('Adding ', story);
-        //     addStory(story.replace('story:', ''), currentEpic, milestoneID);
-        //   }
-        // })
         console.log('label: ',name);
         console.log(epic);
-        client.addLabel(projectID, milestoneID, name, epicColor, epic, processEpicData)
-      })  
+        funcArrays.push(
+            function(done) {
+                client.addLabel(projectID, milestoneID, name, epicColor, epic, processEpicData, done);
+            }
+        );        
+    });
+    async.series(funcArrays, console.log);
 }
 
 function getEpicName(epic) {
@@ -64,6 +76,8 @@ function getEpicName(epic) {
 }
 
 function processEpicData(projectID, milestoneID, name, epic) {
+
+        var funcArrays = [];
         epic.split(/\r?\n/).filter(function(story){ return story != '' }).forEach(function(story, storyIndex) {
           var currentEpic;
           if (storyIndex == 0) {
@@ -73,8 +87,13 @@ function processEpicData(projectID, milestoneID, name, epic) {
           }
           if (storyIndex > 0) {
             console.log('Adding ',projectID, story.replace('story:', ''), name, milestoneID);
-            client.addStory(projectID, story.replace('story:', ''), name, milestoneID);
+            funcArrays.push(
+                function(done) {
+                    client.addStory(projectID, story.replace('story:', ''), name, milestoneID, done);
+                }
+            );            
           }
-        })
+        });
+        async.series(funcArrays, console.log);
 }
 

@@ -7,7 +7,7 @@ story:Developer identify gaps in business requirements
 story:Client clarify gaps in business requirements 
 story:Developer identify technical risks and solutions 
 story:Developer finalize development plan 
-story:Developer or story:Client provide access to project tracking 
+story:Developer or Client provide access to project tracking 
 story:Developer initialize project tracking tool with the finalized development plan 
 story:Developer setup IM chat channel for daily communication 
 
