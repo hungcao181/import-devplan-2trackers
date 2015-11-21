@@ -20,16 +20,16 @@ var token = secret.pivotaltracker_APItoken;
 
 var async = require('async');
 // var each = require('async-each-series');
+var jQuery = require('jquery-deferred');
 function stringStartsWith (string, prefix) {
     return string.slice(0, prefix ? prefix.length : null) == prefix;
 }
 module.exports = {
     id: projectID,
     addStories: function (data) {
-        // var arrayFuncs = [];
-        // function createStories() {
-        // }
-        var stories = data.split(/\r?\n/).filter(function(story){ return story != '' }).reverse();
+        // the easiest way to create stories for Pivotal tracker
+        var stories = data.replace(/sprint:|epic:/gi, function myFunction(x){return x.toUpperCase();})
+        .split(/\r?\n/).filter(function(story){ return story != '' }).reverse();
         var labels = data.split(/\r?\n/)
             .filter(function(story){ return stringStartsWith(story, 'EPIC:') })
             .map(function(epic) { return epic.replace('EPIC:','')})
@@ -45,14 +45,15 @@ module.exports = {
                 done();
             }
             else {
+                var storyType = stringStartsWith(story, 'SPRINT:') ? 'release' : 'feature'; 
                 var aStory = {
                     name: story,
                     // description: '',
-                    storyType: stringStartsWith(story, 'SPRINT:') ? 'release' : 'feature',
+                    storyType: storyType,
                     // currentState: 'unscheduled',
                     requestedById: REQUESTED_BY_ID,
                     ownerIds: [OWNER_ID],
-                    labels: label ? [label] : null,
+                    labels: label && storyType == 'feature' ? [label] : null,
                 };
                 
                 client.project(projectID).stories.create(aStory, function(error, response) {
@@ -71,10 +72,41 @@ module.exports = {
         }
         );
     },
-    addMilestone: function (projectID, index, done) {
+    createStory: function (newStory, done) {
+        var client = new tracker.Client({trackerToken:token});
+        
+        var data = {
+            name: newStory.title,
+            description: '',
+            storyType: 'feature',
+            currentState: 'unscheduled',
+            requestedById: REQUESTED_BY_ID,
+            ownerIds: [OWNER_ID],
+            labels: newStory.labels,
+            // estimate: 2,
+            // comments: [{
+            //     personId: REQUESTED_BY_ID,
+            //     text: 'whoa, auto new story comment!'
+            // }],
+            // tasks: [{
+            //     description: 'wow, auto new story task!!'
+            // }],
+        };
+        
+        client.project(projectID).stories.create(data, function(error, story) {
+            console.log('story:', story.name);
+            if (error) {
+                done(error);
+            }
+            else {
+                done();
+            }
+        });
+    },
+    createMilestone: function (milestone) {
         var client = new tracker.Client({trackerToken:token});
         var data = {
-            name: 'Sprint #' + index,
+            name: 'Sprint ' + milestone,
             description: '',
             storyType: 'release',
             // currentState: 'unscheduled',
@@ -90,16 +122,18 @@ module.exports = {
             //     description: 'wow, auto new story task!!'
             // }],
         };
-        
+        // return client.project(projectID).stories.create(data).promise();
+        var df = jQuery.Deferred();
+        console.log('milestone:', milestone);
         client.project(projectID).stories.create(data, function(error, story) {
+            console.log('sprint:', story.name);
             if (error) {
-                console.log('Project id=', projectID, ' add release error', error);
-                done(error);
-            }
-            else {
-                done();
-            }
+                console.log(error);
+                df.reject();
+            };
+            df.resolve(story);
         }); 
+        return df.promise();
         
     },
     addLabel: function (projectID, milestoneID, label, color, epicData) {

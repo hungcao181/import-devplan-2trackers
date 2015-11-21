@@ -9,38 +9,92 @@ var client = require('./pivotaltracker-service')
 // console.log(client);
 var async = require('async');
 var jQuery = require('jquery-deferred');
+var readline = require('readline');
 
-loadData();
+main();
 
-// loadDataSeries();
+function main () {
+    
+    var rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+    });
+    //we can input argument when run npm start and check process.argv[2] instead. Below is example of using readline
+    rl.question("Which function do you want to run? 1: byOrder, 2: byStructure ", function(answer) {
+        // TODO: Log the answer in a database
+         
+        console.log('You selected ',answer,". Here we go ");
+        if (answer == 1) {
+            loadDataByOrder();
+        };
+        if (answer == 2)
+        {
+            loadDataByStructure();
+        }
+        rl.close();
+    });
+}
 
-function loadDataSeries() {
+
+function loadDataByOrder() {
   fs.readFile(filepath, {'encoding': 'utf8'}, function (err, data) {
     if (err) throw err;
     client.addStories(data);        
   });  
 }
 
-loadDataNew() {
-    
+function loadDataByStructure() {
+    fs.readFile(filepath, {'encoding': 'utf8'}, function (err, data) {
+        if (err) throw err;
+        var formatedData = data.replace(/sprint:|epic:/gi, function myFunction(x){return x.toUpperCase();});
+        var sprints = formatedData.split('SPRINT:').filter(function(s) {return s != ''}).reverse();
+        async.eachSeries(
+            sprints,
+            processSprint,
+            function(err) {
+                if (err) console.log('error ',err);    
+            }
+        );
+    });
 }
 
-function loadData() {
-  fs.readFile(filepath, {'encoding': 'utf8'}, function (err, data) {
-    if (err) throw err;
-    var sprints = data.split('SPRINT:').filter(function(s) {return s != ''});
-    async.each(
-        sprints, 
-        function (sprint, done) {
-            jQuery.when(client.addMilestone(client.id, getSprintIndex(sprint), done)) {
-                processMilestoneData(client.id, sprint, null);
-            }
-        },
-        function(results) {
-            console.log('added milestone ',results);
+function processSprint(sprint, done) {
+    var epics = sprint.split('EPIC:').filter(function(e) { return e != ''; });
+    var sprintName = epics.shift().replace(/(?:\r\n|\r|\n)/g, '');;
+    console.log(sprintName);
+    jQuery.when(createMilestone(sprintName)).done(
+        function() {
+            async.eachSeries(
+                epics.reverse(),
+                processEpic,
+                function(err) {
+                    if (err) console.log('error ',err);
+                    done();
+                }
+            );
         }
-    )
-  });  
+    );
+}
+
+function processEpic(epic, done) {
+    var stories = epic.split(/\r?\n/).filter(function(story){ return story != '' });
+    var label = stories.shift();//first item is epic name
+    async.eachSeries(
+        stories.reverse().map(function(s) {return {'title':s, 'labels': [label]}}),
+        createStory,
+        function(err) {
+            if (err) console.log('error ',err);
+            done();
+        }
+    );
+}
+
+function createMilestone(milestone) {
+    return client.createMilestone(milestone);
+}
+
+function createStory(story, done) {
+    client.createStory(story,done);
 }
 
 function getSprintIndex(sprint) {
@@ -49,23 +103,6 @@ function getSprintIndex(sprint) {
   return sprint.slice(beginSlice, endSlice);
 }
 
-function processMilestoneData(projectID, sprintData, milestoneID) {
-    var epics = sprintData.split('EPIC:').filter(function(e) {
-    return e.slice(0,1) != "#" && e != '';
-    });
-    var funcArrays = [];
-    epics.forEach(function(epic) {
-        var name = getEpicName(epic);
-        console.log('label: ',name);
-        console.log(epic);
-        funcArrays.push(
-            function(done) {
-                client.addLabel(projectID, milestoneID, name, epicColor, epic, processEpicData, done);
-            }
-        );        
-    });
-    async.series(funcArrays, console.log);
-}
 
 function getEpicName(epic) {
   var arr = epic.split(/\r?\n/);
@@ -74,26 +111,3 @@ function getEpicName(epic) {
   }
   return '';
 }
-
-function processEpicData(projectID, milestoneID, name, epic) {
-
-        var funcArrays = [];
-        epic.split(/\r?\n/).filter(function(story){ return story != '' }).forEach(function(story, storyIndex) {
-          var currentEpic;
-          if (storyIndex == 0) {
-            currentEpic = story;
-            console.log('Adding Epic:', story);
-            
-          }
-          if (storyIndex > 0) {
-            console.log('Adding ',projectID, story.replace('story:', ''), name, milestoneID);
-            funcArrays.push(
-                function(done) {
-                    client.addStory(projectID, story.replace('story:', ''), name, milestoneID, done);
-                }
-            );            
-          }
-        });
-        async.series(funcArrays, console.log);
-}
-

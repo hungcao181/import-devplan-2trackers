@@ -30,6 +30,7 @@
     "node-gitlab": "^1.2.1",
     "pivotaltracker": "^0.1.4",
     "querystring": "^0.2.0",
+    "readline": "^1.2.1",
     "request": "^2.65.0"
   }
 }
