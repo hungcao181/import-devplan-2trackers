@@ -3,32 +3,39 @@ var fs = require('fs');
 var filepath = './src/data.txt';
 var epicColor = "#5CB85C";
 // var secret = require('./client.secret');
+var client;
+var projectStartDate = new Date('2015-10-10'); //month start from 0, 10 is for nov
 
-var client = require('./pivotaltracker-service')
+// var client = require('./pivotaltracker-service');
+// var client = require('./gitlab-service');
 // var projectId = secret.pivotaltracker_projectID;
 // console.log(client);
 var async = require('async');
 var jQuery = require('jquery-deferred');
 var readline = require('readline');
 
-main();
+importer();
 
-function main () {
+function importer () {
     
     var rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout
     });
     //we can input argument when run npm start and check process.argv[2] instead. Below is example of using readline
-    rl.question("Which function do you want to run? 1: byOrder, 2: byStructure ", function(answer) {
+    rl.question("What's your tracker tool? 1: Pivotal Tracker, 2: Gitlab ", function(answer) {
         // TODO: Log the answer in a database
          
         console.log('You selected ',answer,". Here we go ");
         if (answer == 1) {
-            loadDataByOrder();
+            
+            client = require('./pivotaltracker-service');
+            loadDataByStructure();
+            
         };
         if (answer == 2)
         {
+            client = require('./gitlab-service');
             loadDataByStructure();
         }
         rl.close();
@@ -63,10 +70,10 @@ function processSprint(sprint, done) {
     var sprintName = epics.shift().replace(/(?:\r\n|\r|\n)/g, '');;
     console.log(sprintName);
     jQuery.when(createMilestone(sprintName)).done(
-        function() {
+        function(milestoneID) {
             async.eachSeries(
                 epics.reverse(),
-                processEpic,
+                processEpic.bind(null, milestoneID), //thanks this post http://stackoverflow.com/questions/20882892/pass-extra-argument-to-async-map
                 function(err) {
                     if (err) console.log('error ',err);
                     done();
@@ -76,12 +83,13 @@ function processSprint(sprint, done) {
     );
 }
 
-function processEpic(epic, done) {
+function processEpic(milestone, epic, done) {
+    // console.log('I got it here, milestoneID:', milestone);
     var stories = epic.split(/\r?\n/).filter(function(story){ return story != '' });
     var label = stories.shift();//first item is epic name
     async.eachSeries(
         stories.reverse().map(function(s) {return {'title':s, 'labels': [label]}}),
-        createStory,
+        createStory.bind(null, milestone),
         function(err) {
             if (err) console.log('error ',err);
             done();
@@ -93,21 +101,7 @@ function createMilestone(milestone) {
     return client.createMilestone(milestone);
 }
 
-function createStory(story, done) {
-    client.createStory(story,done);
-}
-
-function getSprintIndex(sprint) {
-  var beginSlice = sprint.indexOf('#') + 1;
-  var endSlice = sprint.indexOf('\r\n');
-  return sprint.slice(beginSlice, endSlice);
-}
-
-
-function getEpicName(epic) {
-  var arr = epic.split(/\r?\n/);
-  if (arr.length>0) {
-    return arr[0];
-  }
-  return '';
+function createStory(milestone, story, done) {
+    // done();
+    client.createStory(milestone, story,done);
 }

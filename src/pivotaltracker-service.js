@@ -12,7 +12,8 @@ var secret = require('./client.secret');
 var tracker  = require("pivotaltracker"),
     username = secret.pivotaltracker_username,
     password = secret.pivotaltracker_password,
-    projectID = secret.pivotaltracker_projectID;
+    projectID = secret.pivotaltracker_projectID,
+    projectStartDate = secret.projectStartDate;
 // console.log('Project ', projectID);
 var REQUESTED_BY_ID = 975547;
 var OWNER_ID = 975547;
@@ -72,7 +73,7 @@ module.exports = {
         }
         );
     },
-    createStory: function (newStory, done) {
+    createStory: function (milestone, newStory, done) {
         var client = new tracker.Client({trackerToken:token});
         
         var data = {
@@ -94,7 +95,7 @@ module.exports = {
         };
         
         client.project(projectID).stories.create(data, function(error, story) {
-            console.log('story:', story.name);
+            console.log('story:', story? story.name : null);
             if (error) {
                 done(error);
             }
@@ -105,6 +106,10 @@ module.exports = {
     },
     createMilestone: function (milestone) {
         var client = new tracker.Client({trackerToken:token});
+
+        var startDate = new Date(projectStartDate);
+        startDate.setTime( startDate.getTime() + parseInt(milestone.replace('#','')) * 604800000 );
+
         var data = {
             name: 'Sprint ' + milestone,
             description: '',
@@ -112,7 +117,7 @@ module.exports = {
             // currentState: 'unscheduled',
             requestedById: REQUESTED_BY_ID,
             ownerIds: [OWNER_ID],
-            // deadline: startDay.add((index-1)*7, 'days')
+            deadline: startDate,
             // estimate: 2,
             // comments: [{
             //     personId: REQUESTED_BY_ID,
@@ -124,66 +129,17 @@ module.exports = {
         };
         // return client.project(projectID).stories.create(data).promise();
         var df = jQuery.Deferred();
-        console.log('milestone:', milestone);
+        // console.log('milestone:', data);
         client.project(projectID).stories.create(data, function(error, story) {
-            console.log('sprint:', story.name);
             if (error) {
                 console.log(error);
                 df.reject();
+            } else {
+                console.log('sprint:', story);
+                df.resolve(story ? story.id : null);                
             };
-            df.resolve(story);
         }); 
         return df.promise();
         
-    },
-    addLabel: function (projectID, milestoneID, label, color, epicData) {
-        var client = new tracker.Client({trackerToken:token});
-    
-        var data = {
-            name: label, //epic
-            description: '',
-            // comments: [{
-            //     personId: COMMENT_PERSON_ID,
-            //     text: 'whoa, auto new epic comment!'
-            // }]
-        };
-        client.project(projectID).epics.create(data, function(error, epic) {
-            if (error) {
-                console.log('add label error: ', error);
-            }
-            else {
-                console.log(epic);
-            }
-        });
-    },
-    addStory: function (projectID, storyTitle, label, milestoneID, done) {
-        var client = new tracker.Client({trackerToken:token});
-        
-        var data = {
-            name: storyTitle,
-            description: '',
-            storyType: 'feature',
-            currentState: 'unscheduled',
-            requestedById: REQUESTED_BY_ID,
-            ownerIds: [OWNER_ID],
-            labels: [label],
-            // estimate: 2,
-            // comments: [{
-            //     personId: REQUESTED_BY_ID,
-            //     text: 'whoa, auto new story comment!'
-            // }],
-            // tasks: [{
-            //     description: 'wow, auto new story task!!'
-            // }],
-        };
-        
-        client.project(projectID).stories.create(data, function(error, story) {
-            if (error) {
-                done(error);
-            }
-            else {
-                done();
-            }
-        });
     }    
 }
