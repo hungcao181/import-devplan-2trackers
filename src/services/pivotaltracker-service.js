@@ -61,9 +61,9 @@ module.exports = {
             description: '',
             storyType: 'feature',
             currentState: 'unscheduled',
-            requestedById: REQUESTED_BY_ID,
-            ownerIds: [OWNER_ID],
             labels: newStory.labels,
+            // requestedById: REQUESTED_BY_ID,
+            // ownerIds: [OWNER_ID],
             // estimate: 2,
             // comments: [{
             //     personId: REQUESTED_BY_ID,

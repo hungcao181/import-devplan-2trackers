@@ -29,4 +29,3 @@ src/public/app/**/*.js.map
 
 *.log
 *.secret
-*.data.txt
