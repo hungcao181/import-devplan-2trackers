@@ -11,9 +11,7 @@ var token = secret.pivotaltracker_APItoken;
 var async = require('async');
 // var each = require('async-each-series');
 var jQuery = require('jquery-deferred');
-function stringStartsWith (string, prefix) {
-    return string.slice(0, prefix ? prefix.length : null) == prefix;
-}
+
 module.exports = {
     createMilestone: function (milestone) {
         var client = new tracker.Client({trackerToken:token});

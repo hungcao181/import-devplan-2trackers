@@ -13,7 +13,7 @@ To start, open your terminal:
 
 4. copy your devplan into data.txt.template file
 
-Note: Be sure the format of data.
+    Note: Be sure the format of data.
  
     * Sprint, Epic, Story must be prefixed accordingly with Sprint:, Epic:, story:
     * Sprint name must be number

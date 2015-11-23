@@ -1,7 +1,6 @@
 'use strict';
 var fs = require('fs');
 var filepath = './src/data.secret';
-var epicColor = "#5CB85C";
 var client;
 
 var async = require('async');
