@@ -8,7 +8,7 @@
 
     https://www.pivotaltracker.com/help/api/rest/v5#Story
  */
-var secret = require('./client.secret');
+var secret = require('../client.secret');
 var tracker  = require("pivotaltracker"),
     username = secret.pivotaltracker_username,
     password = secret.pivotaltracker_password,
@@ -26,7 +26,6 @@ function stringStartsWith (string, prefix) {
     return string.slice(0, prefix ? prefix.length : null) == prefix;
 }
 module.exports = {
-    id: projectID,
     addStories: function (data) {
         // the easiest way to create stories for Pivotal tracker
         var stories = data.replace(/sprint:|epic:/gi, function myFunction(x){return x.toUpperCase();})

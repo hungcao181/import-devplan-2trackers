@@ -29,13 +29,13 @@ function importer () {
         console.log('You selected ',answer,". Here we go ");
         if (answer == 1) {
             
-            client = require('./pivotaltracker-service');
+            client = require('./services/pivotaltracker-service');
             loadDataByStructure();
             
         };
         if (answer == 2)
         {
-            client = require('./gitlab-service');
+            client = require('./services/gitlab-service');
             loadDataByStructure();
         }
         rl.close();

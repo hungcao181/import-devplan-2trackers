@@ -1,4 +1,4 @@
-var secret = require('./client.secret');
+var secret = require('../client.secret');
 var gitlab = require('node-gitlab');
 var client = gitlab.create({
   api: 'https://gitlab.com/api/v3',
@@ -8,12 +8,11 @@ var client = gitlab.create({
 
 var async = require('async');
 var jQuery = require('jquery-deferred');
-
-var projectID = client.id = '591075',
+var projectID = client.id = encodeURIComponent(secret.gitlab_projectFullName),//'591075'
     projectStartDate = secret.projectStartDate;
 
 module.exports = {
-    id: projectID,
+    // id: projectID,
     createMilestone: function (milestone) {
         var startDate = new Date(projectStartDate);
         startDate.setTime( startDate.getTime() + parseInt(milestone.replace('#','')) * 604800000 );
