@@ -24,13 +24,9 @@
   "homepage": "https://github.com/hungcao181/import-issues-2repo#readme",
   "dependencies": {
     "async": "^1.5.0",
-    "https": "^1.0.0",
     "jquery-deferred": "^0.3.0",
-    "moment": "^2.10.6",
     "node-gitlab": "^1.2.1",
     "pivotaltracker": "^0.1.4",
-    "querystring": "^0.2.0",
-    "readline": "^1.2.1",
-    "request": "^2.65.0"
+    "readline": "^1.2.1"
   }
 }

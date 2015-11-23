@@ -59,24 +59,5 @@ module.exports = {
                 }
             }
         );
-    },
-    createLabel: function (name, color) {
-        var epic = {"id": projectID, "name": name, "color": color};
-        client.projects.createLabel(epic, function(err, data) {
-            if (err && err.statusCode != 409 ) {//409: duplicate
-                console.log(err);
-                return;
-            }
-            console.log('label ', name, ' created');
-        });
-    },
-    getProjects: function () {
-        client.request('get', '/projects', {}, function (err, repos) {
-            if (err) {
-                console.log(err);
-                return;
-            }
-            console.log(repos);
-        });
     }                
 }

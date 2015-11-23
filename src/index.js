@@ -2,14 +2,8 @@
 var fs = require('fs');
 var filepath = './src/data.txt';
 var epicColor = "#5CB85C";
-// var secret = require('./client.secret');
 var client;
-var projectStartDate = new Date('2015-10-10'); //month start from 0, 10 is for nov
 
-// var client = require('./pivotaltracker-service');
-// var client = require('./gitlab-service');
-// var projectId = secret.pivotaltracker_projectID;
-// console.log(client);
 var async = require('async');
 var jQuery = require('jquery-deferred');
 var readline = require('readline');
@@ -24,7 +18,6 @@ function importer () {
     });
     //we can input argument when run npm start and check process.argv[2] instead. Below is example of using readline
     rl.question("What's your tracker tool? 1: Pivotal Tracker, 2: Gitlab ", function(answer) {
-        // TODO: Log the answer in a database
          
         console.log('You selected ',answer,". Here we go ");
         if (answer == 1) {
@@ -84,7 +77,6 @@ function processSprint(sprint, done) {
 }
 
 function processEpic(milestone, epic, done) {
-    // console.log('I got it here, milestoneID:', milestone);
     var stories = epic.split(/\r?\n/).filter(function(story){ return story != '' });
     var label = stories.shift();//first item is epic name
     async.eachSeries(

@@ -11,7 +11,9 @@ To start, open your terminal:
 3. > npm install
 
 4. copy your devplan into data.txt.template file
-Note: Be sure the format of data. 
+
+Note: Be sure the format of data.
+ 
 * Sprint, Epic, Story must be prefixed accordingly with Sprint:, Epic:, story:
 * Sprint name must be number
 
@@ -20,3 +22,5 @@ Note: Be sure the format of data.
 6. rename data.txt.template to data.txt, client.secret.template to client.secret
 
 7. > npm start
+
+Here we go!
