@@ -6,7 +6,6 @@ var client;
 var async = require('async');
 var jQuery = require('jquery-deferred');
 var readline = require('readline');
-
 importer();
 
 function importer () {
@@ -16,7 +15,7 @@ function importer () {
         output: process.stdout
     });
     //we can input argument when run npm start and check process.argv[2] instead. Below is example of using readline
-    rl.question("What's your tracker tool? 1: Pivotal Tracker, 2: Gitlab ", function(answer) {
+    rl.question("What's your tracker tool? 1: Pivotal Tracker, 2: Gitlab", function(answer) {
          
         console.log('You selected ',answer,". Here we go ");
         if (answer == 1) {
@@ -30,16 +29,13 @@ function importer () {
             client = require('./services/gitlab-service');
             loadDataByStructure();
         }
+        if (answer == 0) {
+            console.log('listing your gitlab project');
+            client = require('./services/gitlab-service');
+            client.getProjects();
+        }
         rl.close();
     });
-}
-
-
-function loadDataByOrder() {
-  fs.readFile(filepath, {'encoding': 'utf8'}, function (err, data) {
-    if (err) throw err;
-    client.addStories(data);        
-  });  
 }
 
 function loadDataByStructure() {
@@ -76,8 +72,9 @@ function processSprint(sprint, done) {
 }
 
 function processEpic(milestone, epic, done) {
-    var stories = epic.split(/\r?\n/).filter(function(story){ return story != '' });
+    var stories = epic.split(/\r?\n/).map(function(s) {return s.trim()}).filter(function(story){ return story != '' });
     var label = stories.shift();//first item is epic name
+    // console.log('stories ', stories);
     async.eachSeries(
         stories.reverse().map(function(s) {return {'title':s, 'labels': [label]}}),
         createStory.bind(null, milestone),

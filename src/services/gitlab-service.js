@@ -1,18 +1,26 @@
 var secret = require('../client.secret');
-var gitlab = require('node-gitlab');
-var client = gitlab.create({
-  api: 'https://gitlab.com/api/v3',
-  privateToken: secret.gitlab_private_token,
-  requestTimeout: 15000,
-});
 
+var projectID = encodeURIComponent(secret.gitlab.gitlab_project),
+    projectStartDate = secret.project_startdate;
+
+var gitlab = require('node-gitlab');
+var https = require('https');
+var fs = require('fs');
 var async = require('async');
 var jQuery = require('jquery-deferred');
-var projectID = client.id = encodeURIComponent(secret.gitlab_projectFullName),//'591075'
-    projectStartDate = secret.projectStartDate;
+var apiPath;
+
+var client = gitlab.create({
+    api: 'https://' + (secret.gitlab.gitlab_selfhosted ? secret.gitlab.gitlab_selfhosted : secret.gitlab.gitlab_hostname) + secret.gitlab.gitlab_api_version,
+    privateToken: secret.gitlab.gitlab_private_token,
+    requestTimeout: 15000,
+});    
+
+if (secret.gitlab.gitlab_selfhosted) {
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; //resolve_selfSigned_issue
+};
 
 module.exports = {
-    // id: projectID,
     createMilestone: function (milestone) {
         var startDate = new Date(projectStartDate);
         startDate.setTime( startDate.getTime() + parseInt(milestone.replace('#','')) * 604800000 );
@@ -59,5 +67,34 @@ module.exports = {
                 }
             }
         );
-    }                
+    },
+    getProjects: function() {
+        //this is just to check connection without the wrapper
+        var options = {
+            hostname: secret.gitlab.gitlab_hostname,
+            // port: 80,
+            path: '/api/v3/projects',
+            method: 'GET',
+            headers: {
+                'PRIVATE-TOKEN': secret.gitlab.gitlab_private_token
+            },
+            // rejectUnauthorized: false,
+        };
+        var req = https.request(options, function(res) {
+            console.log("statusCode: ", res.statusCode);
+            console.log("headers: ", res.headers);
+            
+            res.on('data', function(d) {
+                console.log('data:', d);
+            });
+        });
+        req.end();
+        
+        req.on('error', function(e) {
+        console.error(e);
+        });    
+    },
+    // resolve_selfSigned_issue: function() {
+    //     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+    // }
 }

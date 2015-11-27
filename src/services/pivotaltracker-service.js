@@ -1,15 +1,10 @@
-
 var secret = require('../client.secret');
 var tracker  = require("pivotaltracker"),
-    username = secret.pivotaltracker_username,
-    password = secret.pivotaltracker_password,
-    projectID = secret.pivotaltracker_projectID,
-    projectStartDate = secret.projectStartDate;
-
-var token = secret.pivotaltracker_APItoken;
+    projectID = secret.pivotaltracker.pivotaltracker_project,
+    projectStartDate = secret.project_startdate,
+    token = secret.pivotaltracker.pivotaltracker_api_token;
 
 var async = require('async');
-// var each = require('async-each-series');
 var jQuery = require('jquery-deferred');
 
 module.exports = {
