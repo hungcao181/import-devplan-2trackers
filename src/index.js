@@ -15,10 +15,10 @@ function importer () {
         output: process.stdout
     });
     //we can input argument when run npm start and check process.argv[2] instead. Below is example of using readline
-    rl.question("What's your tracker tool? 1: Pivotal Tracker, 2: Gitlab", function(answer) {
+    rl.question("What's your tracker tool? 1: Pivotal Tracker, 2: Gitlab. default = Pivotal Tracker", function(answer) {
          
         console.log('You selected ',answer,". Here we go ");
-        if (answer == 1) {
+        if (answer == 1 || answer == 0 || answer == null) {
             
             client = require('./services/pivotaltracker-service');
             loadDataByStructure();
@@ -29,7 +29,7 @@ function importer () {
             client = require('./services/gitlab-service');
             loadDataByStructure();
         }
-        if (answer == 0) {
+        if (answer == 99) {
             console.log('listing your gitlab project');
             client = require('./services/gitlab-service');
             client.getProjects();
@@ -41,8 +41,8 @@ function importer () {
 function loadDataByStructure() {
     fs.readFile(filepath, {'encoding': 'utf8'}, function (err, data) {
         if (err) throw err;
-        var formatedData = data.replace(/sprint:|epic:/gi, function myFunction(x){return x.toUpperCase();});
-        var sprints = formatedData.split('SPRINT:').filter(function(s) {return s != ''}).reverse();
+        // var formatedData = data.replace(/sprint:|epic:/gi, function myFunction(x){return x.toUpperCase();});
+        var sprints = data.split(/SPRINT[ ]*:?[ ]*/).filter(function(s) {return s != ''}).reverse();
         async.eachSeries(
             sprints,
             processSprint,
@@ -54,8 +54,8 @@ function loadDataByStructure() {
 }
 
 function processSprint(sprint, done) {
-    var epics = sprint.split('EPIC:').filter(function(e) { return e != ''; });
-    var sprintName = epics.shift().replace(/(?:\r\n|\r|\n)/g, '');;
+    var epics = sprint.split(/EPIC[ ]*:?[ ]*/).filter(function(e) { return e != ''; });
+    var sprintName = epics.shift();//.replace(/(?:\r\n|\r|\n)/g, '');
     console.log(sprintName);
     jQuery.when(createMilestone(sprintName)).done(
         function(milestoneID) {

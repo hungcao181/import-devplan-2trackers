@@ -12,7 +12,8 @@ module.exports = {
         var client = new tracker.Client({trackerToken:token});
 
         var startDate = new Date(projectStartDate);
-        startDate.setTime( startDate.getTime() + parseInt(milestone.replace('#','')) * 604800000 );
+        
+        startDate.setTime( startDate.getTime() + parseInt(milestone.replace(/[^0-9]/g,'')) * 604800000 );
 
         var data = {
             name: 'Sprint ' + milestone,

@@ -11,7 +11,7 @@ To start, open your terminal:
 
 3. > npm install
 
-4. copy your devplan into data.txt.template file
+4. copy your devplan into data.secret.template file
 
     Note: Be sure the format of data.
  

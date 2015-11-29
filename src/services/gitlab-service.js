@@ -23,7 +23,7 @@ if (secret.gitlab.gitlab_selfhosted) {
 module.exports = {
     createMilestone: function (milestone) {
         var startDate = new Date(projectStartDate);
-        startDate.setTime( startDate.getTime() + parseInt(milestone.replace('#','')) * 604800000 );
+        startDate.setTime( startDate.getTime() + parseInt(milestone.replace(/[^0-9]/g,'')) * 604800000 );
         
         var dateStr = startDate.getFullYear() + '-' + (startDate.getMonth() + 1) + '-' + startDate.getDate();
         
