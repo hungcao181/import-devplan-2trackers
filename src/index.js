@@ -42,7 +42,7 @@ function loadDataByStructure() {
     fs.readFile(filepath, {'encoding': 'utf8'}, function (err, data) {
         if (err) throw err;
         // var formatedData = data.replace(/sprint:|epic:/gi, function myFunction(x){return x.toUpperCase();});
-        var sprints = data.split(/SPRINT[ ]*:?[ ]*/).filter(function(s) {return s != ''}).reverse();
+        var sprints = data.split(/SPRINT[ ]*:?[ ]*/i).filter(function(s) {return s != ''}).reverse();
         async.eachSeries(
             sprints,
             processSprint,
@@ -54,7 +54,7 @@ function loadDataByStructure() {
 }
 
 function processSprint(sprint, done) {
-    var epics = sprint.split(/EPIC[ ]*:?[ ]*/).filter(function(e) { return e != ''; });
+    var epics = sprint.split(/EPIC[ ]*:?[ ]*/i).filter(function(e) { return e != ''; });
     var sprintName = epics.shift();//.replace(/(?:\r\n|\r|\n)/g, '');
     console.log(sprintName);
     jQuery.when(createMilestone(sprintName)).done(
