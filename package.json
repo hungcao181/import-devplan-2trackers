@@ -1,32 +1,34 @@
 {
-  "name": "import-issues-2repo",
+  "name": "import devplan 2 trackers",
   "version": "1.0.0",
-  "description": "import development plan into tracking tools",
-  "main": "index.js",
+  "description": "A simple yet efficient importer for transfering dev plan into tracker tools",
+  "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./src/index.js"
+    "start": "electron ."
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hungcao181/import-issues-2repo.git"
+    "fork from url": "git+https://github.com/electron/electron-quick-start.git",
+    "url": "git+https://github.com/hungcao181/import-devplan-2trackers"
   },
   "keywords": [
-    "gitlab",
+    "Electron",
+    "pivotal tracker",
     "gitlab",
     "import"
   ],
-  "author": "hung",
-  "license": "ISC",
+  "author": "GitHub",
+  "license": "CC0-1.0",
   "bugs": {
-    "url": "https://github.com/hungcao181/import-issues-2repo/issues"
+    "url": "https://github.com/hungcao181/import-devplan-2trackers/issues"
   },
-  "homepage": "https://github.com/hungcao181/import-issues-2repo#readme",
-  "dependencies": {
+  "homepage": "https://github.com/hungcao181/import-devplan-2trackers#readme",
+  "devDependencies": {
+    "electron": "^1.3.4",
     "async": "^1.5.0",
     "jquery-deferred": "^0.3.0",
     "node-gitlab": "^1.2.1",
-    "pivotaltracker": "^0.1.4",
-    "readline": "^1.2.1"
+    "pivotaltracker": "^0.1.4"
+
   }
 }
