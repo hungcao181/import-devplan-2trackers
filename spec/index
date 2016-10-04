@@ -1,0 +1,15 @@
+Epic: settings management
+user choose service to work with (Pivotal tracker / Gitlab.com / SelfHosted Gitlab)
+user load current settings of Pivotal
+user load current settings of Gitlab
+user save settings of Pivotal
+user save setting of Gitlab
+
+Epic: Data management
+user load stories from file
+user input/update stories on text area
+user save stories into file
+
+Epic:  
+user push data to Pivotal tracker
+user push data to Gitlab

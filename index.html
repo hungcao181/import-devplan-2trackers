@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Hello World!</title>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Hello World!</h1>
+      <!-- All of the Node.js APIs are available in this renderer process. -->
+      We are using node <script>document.write(process.versions.node)</script>,
+      Chromium <script>document.write(process.versions.chrome)</script>,
+      and Electron <script>document.write(process.versions.electron)</script>.
+    <div>
+    <div class="setting">
+      <h2> Settings for Pivotal Tracker</h2><input type="radio" name="tracker" id="pivotalradio" value="1">
+      Project ID: <input type="text" id="prjid"><br>
+      API Token: <input type="text" id="pttoken"><br>
+    </div>
+    <div class="setting">
+      <h2> Settings for Gitlab</h2> <input type="radio" name="tracker" id="gitlabradio" value="2">
+      Project space/project name: <input type="text" name="prjname" placeholder="pear/myblog"><br>
+      Private Token: <input type="text" name="gitlabtoken"><br>
+      API Version: <input type="text" name="apiversion" value="/api/v3"><br>
+      Host Name: <input type="text" name="hostname" value="gitlab.com"><br>
+      Selfhosted Name: <input type="text" name="sefthosted" placeholder="gitlab.asoft-python.com"><br>
+    </div>
+    <div id="holder">
+      Drag your file here
+    </div>
+    <div class="data">
+      <textarea rows="4" cols="50" id="data">
+      </textarea>
+      <p id="working-file"></p>
+      <button id="push-button" type="button" >Push to Tracker</button>
+      <button id="load-button" type="button"> Load data </button>
+      <button id="save-button" type="button"> Save data </button>
+    </div>
+  </body>
+
+  <script>
+    // You can also require other files to run in this process
+    require('./renderer.js');
+    let importer = require('./importer.js');
+    
+    let pushButton = document.getElementById("push-button");
+    pushButton.addEventListener("click", (e) => {
+      let options = {};
+      options.project = document.getElementById("prjid").value;
+      options.apitoken = document.getElementById("pttoken").value;
+      //options.startdate = 
+      importer(options);
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log("ready");
+      const ipc = require('electron').ipcRenderer;
+      ipc.send('document-ready');
+    });
+
+  </script>
+</html>
