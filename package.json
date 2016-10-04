@@ -1,5 +1,5 @@
 {
-  "name": "import devplan 2 trackers",
+  "name": "import-devplan-2-trackers",
   "version": "1.0.0",
   "description": "A simple yet efficient importer for transfering dev plan into tracker tools",
   "main": "main.js",
