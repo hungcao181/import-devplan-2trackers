@@ -1,3 +1,4 @@
+require('electron-reload')(__dirname);
 const electron = require('electron')
 // Module to control application life.
 const app = electron.app
@@ -76,7 +77,7 @@ ipc.on('save-dialog', (e) => {
 })
 
 ipc.on('document-ready', (e) => {
-  console.log("document ready, from main");
+  // console.log("document ready, from main");
   fs.readFile('./config/client.secret', {'encoding': 'utf8'}, function (err, data) {
       if (err) throw err;
       savedConfig = JSON.parse(data);

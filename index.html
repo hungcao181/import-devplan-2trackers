@@ -2,53 +2,82 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
+    <title>Import development plan into trackers!</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap-theme.min.css">    
+
+    <link rel="stylesheet" href="./style.css">
   </head>
   <body>
-    <div class="header">
-      <h1>Hello World!</h1>
-      <!-- All of the Node.js APIs are available in this renderer process. -->
-      We are using node <script>document.write(process.versions.node)</script>,
-      Chromium <script>document.write(process.versions.chrome)</script>,
-      and Electron <script>document.write(process.versions.electron)</script>.
-    <div>
-    <div class="setting">
-      <h2> Settings for Pivotal Tracker</h2><input type="radio" name="tracker" id="pivotalradio" value="1">
-      Project ID: <input type="text" id="prjid"><br>
-      API Token: <input type="text" id="pttoken"><br>
-    </div>
-    <div class="setting">
-      <h2> Settings for Gitlab</h2> <input type="radio" name="tracker" id="gitlabradio" value="2">
-      Project space/project name: <input type="text" name="prjname" placeholder="pear/myblog"><br>
-      Private Token: <input type="text" name="gitlabtoken"><br>
-      API Version: <input type="text" name="apiversion" value="/api/v3"><br>
-      Host Name: <input type="text" name="hostname" value="gitlab.com"><br>
-      Selfhosted Name: <input type="text" name="sefthosted" placeholder="gitlab.asoft-python.com"><br>
-    </div>
-    <div id="holder">
-      Drag your file here
-    </div>
-    <div class="data">
-      <textarea rows="4" cols="50" id="data">
-      </textarea>
-      <p id="working-file"></p>
-      <button id="push-button" type="button" >Push to Tracker</button>
-      <button id="load-button" type="button"> Load data </button>
-      <button id="save-button" type="button"> Save data </button>
+    <div class="container">
+      <div class="header">
+        <h1>Turn slog into fun!</h1>
+      <div>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <label>
+            <input type="radio" name="tracker" value="1" id="radtracker1" checked>
+            Pivotal Tracker
+          </label>
+        </div>
+        <!--radtracker1 class here is used to reference to radio button above-->
+        <div class="panel-content radtracker1" name="trackerpanel">        
+          <label for="prjid"> Project ID:</label><input type="text" id="prjid" class="form-control">
+          <label for="pttoken"> API Token:</label><input type="text" id="pttoken" class="form-control">
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <label>
+            <!--id here is used for reference purpose-->
+            <input type="radio" name="tracker" value="2" id="radtracker2">
+            Gitlab
+          </label>
+        </div>
+        <!--radtracker2 class here is used to reference to radio button above-->
+        <div class="panel-content hidden radtracker2" name="trackerpanel">
+          <label for="prjname">Project space/project name:</label>
+          <input type="text" id="prjname" placeholder="pear/myblog" class="form-control">
+          <label for="gitlabtoken"> Private Token:</label>
+          <input type="text" id="gitlabtoken" class="form-control">
+          <label for="apiversion">API Version:</label> 
+          <input type="text" id="apiversion" value="/api/v3" class="form-control">
+          <label for="hostname">Host Name:</label>
+          <input type="text" id="hostname" value="gitlab.com" class="form-control">
+          <label for="sefthosted">Selfhosted Name:</label>
+          <input type="text" id="sefthosted" placeholder="gitlab.asoft-python.com" class="form-control">
+        </div>
+      </div>
+      <div class="data">
+        <textarea rows="15" cols="50" id="data" class="form-control">
+        </textarea>
+        <p id="working-file" class="form-control-static"></p>
+      </div>
+      <div class="btn-group" role="group">
+        <button id="load-button" type="button" class="btn btn-default"> Load data </button>
+        <button id="save-button" type="button" class="btn btn-primary"> Save data </button>
+        <button id="push-button" type="button" class="btn btn-danger">Push to Tracker</button>
+      </div>
     </div>
   </body>
-
+  <footer>
+    <a href="#" class="pull-right">Power by Electron</a>
+  </footer>
   <script>
     // You can also require other files to run in this process
     require('./renderer.js');
     let importer = require('./importer.js');
+    let tracker = 1;
     
     let pushButton = document.getElementById("push-button");
     pushButton.addEventListener("click", (e) => {
       let options = {};
       options.project = document.getElementById("prjid").value;
       options.apitoken = document.getElementById("pttoken").value;
-      //options.startdate = 
       importer(options);
     });
 
@@ -58,5 +87,20 @@
       ipc.send('document-ready');
     });
 
+    let trackers = document.getElementsByName("tracker");
+    for (i=0;i<trackers.length; i++) {
+      trackers[i].addEventListener('click', (e) => {
+        let trackerpanels = document.getElementsByName("trackerpanel");
+        //show/hide the panel content according to selected tracker
+        for (j=0;j<trackerpanels.length;j++) {
+          //the panel content must contain a class that match relevant radio's id
+          if (trackerpanels[j].classList.contains(e.target.id)) {
+            trackerpanels[j].classList.remove("hidden");
+            tracker = e.target.value;
+            console.log("tracker ", tracker);
+          } else trackerpanels[j].classList.add("hidden");
+        }
+      })
+    }
   </script>
 </html>
