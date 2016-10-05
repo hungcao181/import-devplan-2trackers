@@ -1,5 +1,6 @@
 //var secret = require('../config/client.secret');
 var tracker  = require("pivotaltracker"),
+    client,
     projectID,
     projectStartDate,
     token;
@@ -9,12 +10,12 @@ var jQuery = require('jquery-deferred');
 
 module.exports = {
     config: function (options) {
-        projectID = options.project,
-        projectStartDate = options.startdate || new Date(),
-        token = options.apitoken;
+        projectID = options.pivotaltracker.project,
+        projectStartDate = options.pivotaltracker.startdate || new Date(),
+        token = options.pivotaltracker.apitoken;
+        client = new tracker.Client({trackerToken:token});
     },
     createMilestone: function (milestone) {
-        var client = new tracker.Client({trackerToken:token});
 
         var startDate = new Date(projectStartDate);
         

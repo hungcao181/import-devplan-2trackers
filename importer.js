@@ -8,23 +8,25 @@ var jQuery = require('jquery-deferred');
 
 function importer (options) {
     
-    var answer = 1;
+    var answer = options.tracker;
     //we can input argument when run npm start and check process.argv[2] instead. Below is example of using readline
     if (answer == 1 || answer == 0 || answer == null) {
         
         client = require('./services/pivotaltracker-service');
-        client.config(options)
+        client.config(options);
         loadDataByStructure();
         
     };
     if (answer == 2)
     {
         client = require('./services/gitlab-service');
+        client.config(options);
         loadDataByStructure();
     }
     if (answer == 99) {
         console.log('listing your gitlab project');
         client = require('./services/gitlab-service');
+        client.config(options);
         client.getProjects();
     }
 }

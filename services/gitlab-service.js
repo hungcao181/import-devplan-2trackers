@@ -1,7 +1,5 @@
-var secret = require('../config/client.secret');
-
-var projectID = encodeURIComponent(secret.gitlab.gitlab_project),
-    projectStartDate = secret.project_startdate;
+//var secret = require('../config/client.secret');
+var secret = {gitlab: {}};
 
 var gitlab = require('node-gitlab');
 var https = require('https');
@@ -9,20 +7,37 @@ var fs = require('fs');
 var async = require('async');
 var jQuery = require('jquery-deferred');
 var apiPath;
+var client;
 
-var client = gitlab.create({
-    api: 'https://' + (secret.gitlab.gitlab_selfhosted ? secret.gitlab.gitlab_selfhosted : secret.gitlab.gitlab_hostname) + secret.gitlab.gitlab_api_version,
-    privateToken: secret.gitlab.gitlab_private_token,
-    requestTimeout: 15000,
-});    
-
-if (secret.gitlab.gitlab_selfhosted) {
-    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; //resolve_selfSigned_issue
-};
 
 module.exports = {
+    config: function (options) {
+
+        secret.gitlab.privatetoken = options.gitlab.privatetoken;
+        secret.gitlab.apiversion =  options.gitlab.apiversion;
+        secret.gitlab.hostname = options.gitlab.hostname;
+        secret.gitlab.selfhosted = options.gitlab.selfhosted;
+
+        secret.gitlab.projectID = encodeURIComponent(options.gitlab.project);
+
+        console.log("name ",options.gitlab.project);
+        console.log("encoded ",secret.gitlab.projectID);
+
+        secret.gitlab.projectStartDate = options.startdate || new Date();
+
+        if (secret.gitlab.selfhosted) {
+            process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; //resolve_selfSigned_issue
+        };
+        
+
+        client = gitlab.create({
+            api: 'https://' + (secret.gitlab.selfhosted ? secret.gitlab.selfhosted : secret.gitlab.hostname) + secret.gitlab.apiversion,
+            privateToken: secret.gitlab.privatetoken,
+            requestTimeout: 15000,
+        });    
+    },
     createMilestone: function (milestone) {
-        var startDate = new Date(projectStartDate);
+        var startDate = new Date(secret.gitlab.projectStartDate);
         startDate.setTime( startDate.getTime() + parseInt(milestone.replace(/[^0-9]/g,'')) * 604800000 );
         
         var dateStr = startDate.getFullYear() + '-' + (startDate.getMonth() + 1) + '-' + startDate.getDate();
@@ -30,12 +45,13 @@ module.exports = {
         console.log('date ',dateStr);
         console.log(startDate);
         var aMilestone = {
-            id: projectID,
+            id: secret.gitlab.projectID,
             title: 'Sprint ' + milestone,
             description: '', 
             // due_date: '2016-11-11',
             due_date: dateStr,
         }
+        console.log("a milestone ", aMilestone);
         var df = jQuery.Deferred();
         client.milestones.create(aMilestone, function (err, data) {
             console.log('milestone: ', data);
@@ -51,7 +67,7 @@ module.exports = {
     createStory: function (milestoneID, newStory, done) {
         client.issues.create(
             {
-                id: projectID,
+                id: secret.gitlab.projectID,
                 title: newStory.title,
                 description: '',
                 labels: newStory.labels,
@@ -71,12 +87,12 @@ module.exports = {
     getProjects: function() {
         //this is just to check connection without the wrapper
         var options = {
-            hostname: secret.gitlab.gitlab_hostname,
+            hostname: secret.gitlab.hostname,
             // port: 80,
             path: '/api/v3/projects',
             method: 'GET',
             headers: {
-                'PRIVATE-TOKEN': secret.gitlab.gitlab_private_token
+                'PRIVATE-TOKEN': secret.gitlab.privatetoken
             },
             // rejectUnauthorized: false,
         };

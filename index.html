@@ -41,15 +41,15 @@
         <!--radtracker2 class here is used to reference to radio button above-->
         <div class="panel-content hidden radtracker2" name="trackerpanel">
           <label for="prjname">Project space/project name:</label>
-          <input type="text" id="prjname" placeholder="pear/myblog" class="form-control">
+          <input type="text" id="prjname" placeholder="pear/myblog" class="form-control" value="hungcao181/dmz">
           <label for="gitlabtoken"> Private Token:</label>
-          <input type="text" id="gitlabtoken" class="form-control">
+          <input type="text" id="privatetoken" class="form-control" value="-EKo1s-MGxi3wy3dsG6Z">
           <label for="apiversion">API Version:</label> 
           <input type="text" id="apiversion" value="/api/v3" class="form-control">
           <label for="hostname">Host Name:</label>
           <input type="text" id="hostname" value="gitlab.com" class="form-control">
           <label for="sefthosted">Selfhosted Name:</label>
-          <input type="text" id="sefthosted" placeholder="gitlab.asoft-python.com" class="form-control">
+          <input type="text" id="selfhosted" placeholder="gitlab.asoft-python.com" class="form-control">
         </div>
       </div>
       <div class="data">
@@ -75,28 +75,43 @@
     
     let pushButton = document.getElementById("push-button");
     pushButton.addEventListener("click", (e) => {
-      let options = {};
-      options.project = document.getElementById("prjid").value;
-      options.apitoken = document.getElementById("pttoken").value;
+      let options = {pivotaltracker:{}, gitlab:{}};
+      options.tracker = tracker;
+      switch (options.tracker) {
+        case 1: //pivotal tracker
+          options.pivotaltracker.project = document.getElementById("prjid").value;
+          options.pivotaltracker.apitoken = document.getElementById("pttoken").value;
+          break;
+        case 2: //gitlab
+          options.gitlab.project = document.getElementById("prjname").value;
+          console.log("get project ", options.gitlab.project);
+          options.gitlab.privatetoken = document.getElementById("privatetoken").value;
+          options.gitlab.apiversion = document.getElementById("apiversion").value;
+          options.gitlab.hostname = document.getElementById("hostname").value;
+          options.gitlab.selfhosted = document.getElementById("selfhosted").value;
+          break;
+      }
       importer(options);
     });
 
+    //inform the ready status to main (to load current setting) 
     document.addEventListener('DOMContentLoaded', function() {
       console.log("ready");
       const ipc = require('electron').ipcRenderer;
       ipc.send('document-ready');
     });
 
+    //hide/show the un/selected tracker panel content
+    //set global tracker variant according to selected tracker tool
     let trackers = document.getElementsByName("tracker");
     for (i=0;i<trackers.length; i++) {
       trackers[i].addEventListener('click', (e) => {
         let trackerpanels = document.getElementsByName("trackerpanel");
-        //show/hide the panel content according to selected tracker
         for (j=0;j<trackerpanels.length;j++) {
           //the panel content must contain a class that match relevant radio's id
           if (trackerpanels[j].classList.contains(e.target.id)) {
             trackerpanels[j].classList.remove("hidden");
-            tracker = e.target.value;
+            tracker = Number(e.target.value);
             console.log("tracker ", tracker);
           } else trackerpanels[j].classList.add("hidden");
         }
