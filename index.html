@@ -15,7 +15,7 @@
     <div class="container">
       <div class="header">
         <h1>Turn slog into fun!</h1>
-      <div>
+      </div>
       <div class="panel panel-default">
         <div class="panel-heading">
           <label>
@@ -52,21 +52,58 @@
           <input type="text" id="selfhosted" placeholder="gitlab.asoft-python.com" class="form-control">
         </div>
       </div>
-      <div class="data">
-        <textarea rows="15" cols="50" id="data" class="form-control">
-        </textarea>
-        <p id="working-file" class="form-control-static"></p>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          Your development plan here
+        </div>
+        <div class="panel-content">
+          <textarea rows="15" cols="50" id="data" class="form-control">
+SPRINT:#1
+
+EPIC:Analysis n Plan
+story:Developer analyze business requirements 
+story:Developer identify gaps in business requirements 
+story:Client clarify gaps in business requirements 
+story:Developer identify technical risks and solutions 
+story:Developer finalize development plan 
+story:Developer or Client provide access to project tracking 
+story:Developer initialize project tracking tool with the finalized development plan 
+story:Developer setup IM chat channel for daily communication 
+
+EPIC:Infrastructure
+story:Client provides access to source code repository 
+story:Developer setups development and staging environment 
+story:Developer initializes source code repository 
+story:Developer integrates key front-end frameworks required for the project 
+story:Client provides art assets provide art assets
+
+SPRINT:#2
+
+          </textarea>
+          <p id="working-file" class="form-control-static"></p>
+        </div>
       </div>
-      <div class="btn-group" role="group">
-        <button id="load-button" type="button" class="btn btn-default"> Load data </button>
-        <button id="save-button" type="button" class="btn btn-primary"> Save data </button>
-        <button id="push-button" type="button" class="btn btn-danger">Push to Tracker</button>
+
+      <div id="primary-actions">
+        <div class="btn-group btn-group-justified" role="group">
+          <div class="btn-group">
+            <button id="load-button" type="button" class="btn btn-default"> Load data </button>
+          </div>
+          <div class="btn-group">
+            <button id="save-button" type="button" class="btn btn-info"> Save </button>
+          </div>
+          <div class="btn-group">
+            <button id="saveas-button" type="button" class="btn btn-primary"> Save as </button>
+          </div>
+          <div class="btn-group">
+            <button id="push-button" type="button" class="btn btn-danger">Push to Tracker</button>
+          </div>
+        </div>
+        <a href="#" class="pull-right">Power by Electron</a>
       </div>
+
     </div>
   </body>
-  <footer>
-    <a href="#" class="pull-right">Power by Electron</a>
-  </footer>
   <script>
     // You can also require other files to run in this process
     require('./renderer.js');

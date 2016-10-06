@@ -7,6 +7,7 @@
   let dataArea = document.getElementById("data");
   let workingFile = document.getElementById("working-file");
   let saveButton = document.getElementById("save-button");
+  let saveasButton = document.getElementById("saveas-button");
   var fs = require('fs');
 
   loadButton.addEventListener('click', function (e) {
@@ -23,6 +24,10 @@
       })
     }
   })
+
+  saveasButton.addEventListener('click', (e) => {
+    ipc.send('save-dialog');
+  });
 
   saveButton.addEventListener('click', (e) => {
     let fileName = workingFile.innerHTML;

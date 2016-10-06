@@ -1,4 +1,5 @@
-require('electron-reload')(__dirname);
+//require('electron-reload')(__dirname);    "electron-reload":"1.0.2",
+
 const electron = require('electron')
 // Module to control application life.
 const app = electron.app
