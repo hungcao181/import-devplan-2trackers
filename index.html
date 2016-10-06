@@ -42,7 +42,7 @@
         <div class="panel-content hidden radtracker2" name="trackerpanel">
           <label for="prjname">Project space/project name:</label>
           <input type="text" id="prjname" placeholder="pear/myblog" class="form-control" value="hungcao181/dmz">
-          <label for="gitlabtoken"> Private Token:</label>
+          <label for="gitlabtoken"> Private Token:https://gitlab.com/profile/personal_access_tokens</label>
           <input type="text" id="privatetoken" class="form-control" value="-EKo1s-MGxi3wy3dsG6Z">
           <label for="apiversion">API Version:</label> 
           <input type="text" id="apiversion" value="/api/v3" class="form-control">
@@ -114,6 +114,7 @@ SPRINT:#2
     pushButton.addEventListener("click", (e) => {
       let options = {pivotaltracker:{}, gitlab:{}};
       options.tracker = tracker;
+      options.data = document.getElementById("data").value;
       switch (options.tracker) {
         case 1: //pivotal tracker
           options.pivotaltracker.project = document.getElementById("prjid").value;

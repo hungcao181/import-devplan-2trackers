@@ -1,6 +1,6 @@
 'use strict';
 var fs = require('fs');
-var filepath = './config/data.secret';
+var data;
 var client;
 
 var async = require('async');
@@ -9,6 +9,7 @@ var jQuery = require('jquery-deferred');
 function importer (options) {
     
     var answer = options.tracker;
+    data = options.data;
     //we can input argument when run npm start and check process.argv[2] instead. Below is example of using readline
     if (answer == 1 || answer == 0 || answer == null) {
         
@@ -32,18 +33,14 @@ function importer (options) {
 }
 
 function loadDataByStructure() {
-    fs.readFile(filepath, {'encoding': 'utf8'}, function (err, data) {
-        if (err) throw err;
-        // var formatedData = data.replace(/sprint:|epic:/gi, function myFunction(x){return x.toUpperCase();});
-        var sprints = data.split(/SPRINT[ ]*:?[ ]*/i).filter(function(s) {return s != ''}).reverse();
-        async.eachSeries(
-            sprints,
-            processSprint,
-            function(err) {
-                if (err) console.log('error ',err);    
-            }
-        );
-    });
+    var sprints = data.split(/SPRINT[ ]*:?[ ]*/i).filter(function(s) {return s != ''}).reverse();
+    async.eachSeries(
+        sprints,
+        processSprint,
+        function(err) {
+            if (err) console.log('error ',err);    
+        }
+    );
 }
 
 function processSprint(sprint, done) {

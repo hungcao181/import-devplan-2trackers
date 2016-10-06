@@ -80,7 +80,7 @@ ipc.on('save-dialog', (e) => {
 ipc.on('document-ready', (e) => {
   // console.log("document ready, from main");
   fs.readFile('./config/client.secret', {'encoding': 'utf8'}, function (err, data) {
-      if (err) throw err;
+      if (err) return;
       savedConfig = JSON.parse(data);
       e.sender.send('config-available', savedConfig)
   });
