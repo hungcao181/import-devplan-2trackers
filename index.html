@@ -98,21 +98,21 @@
 SPRINT #1
 
 EPIC:Analysis n Plan
-story:Developer analyze business requirements 
-story:Developer identify gaps in business requirements 
-story:Client clarify gaps in business requirements 
-story:Developer identify technical risks and solutions 
-story:Developer finalize development plan 
-story:Developer or Client provide access to project tracking 
-story:Developer initialize project tracking tool with the finalized development plan 
-story:Developer setup IM chat channel for daily communication 
+Developer analyze business requirements 
+Developer identify gaps in business requirements 
+Client clarify gaps in business requirements 
+Developer identify technical risks and solutions 
+Developer finalize development plan 
+Developer or Client provide access to project tracking 
+Developer initialize project tracking tool with the finalized development plan 
+Developer setup IM chat channel for daily communication 
 
 EPIC:Infrastructure
-story:Client provides access to source code repository 
-story:Developer setups development and staging environment 
-story:Developer initializes source code repository 
-story:Developer integrates key front-end frameworks required for the project 
-story:Client provides art assets provide art assets
+Client provides access to source code repository 
+Developer setups development and staging environment 
+Developer initializes source code repository 
+Developer integrates key front-end frameworks required for the project 
+Client provides art assets provide art assets
 
 SPRINT #2
 Epic: settings management
@@ -141,6 +141,8 @@ Show the importing progress
 user get access using user/pass instead of token
           </textarea>
           <p id="working-file" class="form-control-static"></p>
+          <p><span id="importstatus" class="label label-success"></span></p>
+          
         </div>
       </div>
 
@@ -183,6 +185,7 @@ user get access using user/pass instead of token
         let options = {pivotaltracker:{}, gitlab:{}};
         options.tracker = tracker;
         options.data = document.getElementById("data").value;
+        options.ipc = ipc;
         switch (options.tracker) {
           case 1: //pivotal tracker
             options.pivotaltracker.project = document.getElementById("prjid").value;
@@ -197,6 +200,7 @@ user get access using user/pass instead of token
             options.gitlab.selfhosted = document.getElementById("selfhosted").value;
             break;
         }
+        // ipc.send('doimport', options);
         importer(options);
       });
 

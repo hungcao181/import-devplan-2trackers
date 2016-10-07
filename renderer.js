@@ -63,3 +63,6 @@
     }
   })
 
+ipc.on('updateimportstatus', (e) => {
+  document.getElementById('importstatus').innerHTML = "Import Successfully!";
+})

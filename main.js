@@ -15,6 +15,8 @@ const dialog = require('electron').dialog;
 
 var fs = require('fs');
 
+let importer = require('./importer.js');
+
 function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({width: 800, height: 600})
@@ -107,4 +109,12 @@ function createExternalUrlWindow (anUrl) {
 //this is triggered from a renderer by issueing ipc.send(openExternalUrl, anUrl)
 ipc.on('openExternalUrl', (e, anUrl) => {
   createExternalUrlWindow(anUrl);
+})
+
+ipc.on('doimport', (e, options) => {
+  console.log('yes, sir, import now');
+  importer(options);
+})
+ipc.on('importsprintdone', (e) => {
+  e.sender.send('updateimportstatus');
 })

@@ -6,10 +6,12 @@ var client;
 var async = require('async');
 var jQuery = require('jquery-deferred');
 
+let ipc;
 function importer (options) {
     
     var answer = options.tracker;
     data = options.data;
+    ipc = options.ipc;
     //we can input argument when run npm start and check process.argv[2] instead. Below is example of using readline
     if (answer == 1 || answer == 0 || answer == null) {
         
@@ -38,7 +40,8 @@ function loadDataByStructure() {
         sprints,
         processSprint,
         function(err) {
-            if (err) console.log('error ',err);    
+            if (err) console.log('error ',err);
+            if (ipc && (typeof(ipc.send) == 'function')) ipc.send('importsprintdone');
         }
     );
 }
