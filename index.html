@@ -24,9 +24,22 @@
           </label>
         </div>
         <!--radtracker1 class here is used to reference to radio button above-->
-        <div class="panel-content radtracker1" name="trackerpanel">        
-          <label for="prjid"> Project ID:</label><input type="text" id="prjid" class="form-control">
-          <label for="pttoken"> API Token:</label><input type="text" id="pttoken" class="form-control">
+        <div class="panel-content radtracker1" name="trackerpanel">
+          <form class="form-horizontal">
+            <div class="form-group">
+              <label for="prjid" class="col-sm-3 control-label"> Project ID</label>
+              <div class="col-sm-9">
+                <input type="text" id="prjid" value="1482424" class="form-control">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="pttoken" class="col-sm-3 control-label"> API Token</label>
+              <div class="col-sm-9">
+                <input type="text" id="pttoken" value="1325f5fb60814d699f4bf40f62dabffd" class="form-control">
+                <p class="form-control-static">Don't know where to get the token? <a href="#" id="getpttoken">Find at bottom of this page</a></p>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
 
@@ -40,16 +53,40 @@
         </div>
         <!--radtracker2 class here is used to reference to radio button above-->
         <div class="panel-content hidden radtracker2" name="trackerpanel">
-          <label for="prjname">Project space/project name:</label>
-          <input type="text" id="prjname" placeholder="pear/myblog" class="form-control" value="hungcao181/dmz">
-          <label for="gitlabtoken"> Private Token:https://gitlab.com/profile/personal_access_tokens</label>
-          <input type="text" id="privatetoken" class="form-control" value="-EKo1s-MGxi3wy3dsG6Z">
-          <label for="apiversion">API Version:</label> 
-          <input type="text" id="apiversion" value="/api/v3" class="form-control">
-          <label for="hostname">Host Name:</label>
-          <input type="text" id="hostname" value="gitlab.com" class="form-control">
-          <label for="sefthosted">Selfhosted Name:</label>
-          <input type="text" id="selfhosted" placeholder="gitlab.asoft-python.com" class="form-control">
+          <form class="form-horizontal">
+            <div class="form-group">
+              <label for="prjname" class="col-sm-3 control-label">Project</label>
+              <div class="col-sm-9">
+                <input type="text" id="prjname" placeholder="pear/myblog" class="form-control" value="hungcao181/dmz">
+              </div>
+            </div>
+            <div class="form-group">            
+              <label for="gitlabtoken" class="col-sm-3 control-label"> Private Token</label>
+              <div class="col-sm-9">
+                <input type="text" id="privatetoken" class="form-control" value="-EKo1s-MGxi3wy3dsG6Z">
+                <p class="form-control-static">Don't have a token yet? <a href="#" id="getgitlabtoken">Get new one here</a></p>
+              </div>
+              
+            </div>
+            <div class="form-group hidden">
+              <label for="apiversion" class="col-sm-3 control-label">API Version</label> 
+              <div class="col-sm-9">
+                <input type="text" id="apiversion" value="/api/v3" class="form-control">
+              </div>
+            </div>
+            <div class="form-group hidden">
+              <label for="hostname" class="col-sm-3 control-label">Host Name</label>
+              <div class="col-sm-9">
+                <input type="text" id="hostname" value="gitlab.com" class="form-control">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="sefthosted" class="col-sm-3 control-label">Selfhosted? Domain</label>
+              <div class="col-sm-9">
+                <input type="text" id="selfhosted" placeholder="gitlab.asoft-python.com" class="form-control">
+              </div>
+            </div>
+          </form>
         </div>
       </div>
       <div class="panel panel-default">
@@ -58,7 +95,7 @@
         </div>
         <div class="panel-content">
           <textarea rows="15" cols="50" id="data" class="form-control">
-SPRINT:#1
+SPRINT #1
 
 EPIC:Analysis n Plan
 story:Developer analyze business requirements 
@@ -77,8 +114,31 @@ story:Developer initializes source code repository
 story:Developer integrates key front-end frameworks required for the project 
 story:Client provides art assets provide art assets
 
-SPRINT:#2
+SPRINT #2
+Epic: settings management
+user choose service to work with (Pivotal tracker / Gitlab.com / SelfHosted Gitlab)
+user input setting for selected tracker
 
+Epic: Data management
+user load stories from file
+user input/update stories on text area
+user save stories into file
+
+Epic: Push to remote trackers 
+user push data to Pivotal tracker
+user push data to Gitlab
+
+SPRINT #3
+Epic: settings management (continued)
+user load current settings of Pivotal from local storage
+user load current settings of Gitlab from local storage
+user save settings of Pivotal
+user save setting of Gitlab
+
+Epic: Enhancement
+Fix gitlab label existing issue
+Show the importing progress
+user get access using user/pass instead of token
           </textarea>
           <p id="working-file" class="form-control-static"></p>
         </div>
@@ -109,51 +169,63 @@ SPRINT:#2
     require('./renderer.js');
     let importer = require('./importer.js');
     let tracker = 1;
-    
-    let pushButton = document.getElementById("push-button");
-    pushButton.addEventListener("click", (e) => {
-      let options = {pivotaltracker:{}, gitlab:{}};
-      options.tracker = tracker;
-      options.data = document.getElementById("data").value;
-      switch (options.tracker) {
-        case 1: //pivotal tracker
-          options.pivotaltracker.project = document.getElementById("prjid").value;
-          options.pivotaltracker.apitoken = document.getElementById("pttoken").value;
-          break;
-        case 2: //gitlab
-          options.gitlab.project = document.getElementById("prjname").value;
-          console.log("get project ", options.gitlab.project);
-          options.gitlab.privatetoken = document.getElementById("privatetoken").value;
-          options.gitlab.apiversion = document.getElementById("apiversion").value;
-          options.gitlab.hostname = document.getElementById("hostname").value;
-          options.gitlab.selfhosted = document.getElementById("selfhosted").value;
-          break;
-      }
-      importer(options);
-    });
+    const ipc = require('electron').ipcRenderer;    
+    const shell = require('electron').shell
 
-    //inform the ready status to main (to load current setting) 
     document.addEventListener('DOMContentLoaded', function() {
       console.log("ready");
-      const ipc = require('electron').ipcRenderer;
+
+      //inform the ready status to main (to load current setting) 
       ipc.send('document-ready');
+
+      let pushButton = document.getElementById("push-button");
+      pushButton.addEventListener("click", (e) => {
+        let options = {pivotaltracker:{}, gitlab:{}};
+        options.tracker = tracker;
+        options.data = document.getElementById("data").value;
+        switch (options.tracker) {
+          case 1: //pivotal tracker
+            options.pivotaltracker.project = document.getElementById("prjid").value;
+            options.pivotaltracker.apitoken = document.getElementById("pttoken").value;
+            break;
+          case 2: //gitlab
+            options.gitlab.project = document.getElementById("prjname").value;
+            console.log("get project ", options.gitlab.project);
+            options.gitlab.privatetoken = document.getElementById("privatetoken").value;
+            options.gitlab.apiversion = document.getElementById("apiversion").value;
+            options.gitlab.hostname = document.getElementById("hostname").value;
+            options.gitlab.selfhosted = document.getElementById("selfhosted").value;
+            break;
+        }
+        importer(options);
+      });
+
+      document.getElementById("getpttoken").addEventListener('click', (e) => {
+        shell.openExternal('https://www.pivotaltracker.com/profile');
+      });
+
+      document.getElementById("getgitlabtoken").addEventListener('click', (e) => {
+        shell.openExternal('https://gitlab.com/profile/personal_access_tokens');
+      });
+
+      //hide/show the un/selected tracker panel content
+      //set global tracker variant according to selected tracker tool
+      let trackers = document.getElementsByName("tracker");
+      for (i=0;i<trackers.length; i++) {
+        trackers[i].addEventListener('click', (e) => {
+          let trackerpanels = document.getElementsByName("trackerpanel");
+          for (j=0;j<trackerpanels.length;j++) {
+            //the panel content must contain a class that match relevant radio's id
+            if (trackerpanels[j].classList.contains(e.target.id)) {
+              trackerpanels[j].classList.remove("hidden");
+              tracker = Number(e.target.value);
+              console.log("tracker ", tracker);
+            } else trackerpanels[j].classList.add("hidden");
+          }
+        })
+      }
+
     });
 
-    //hide/show the un/selected tracker panel content
-    //set global tracker variant according to selected tracker tool
-    let trackers = document.getElementsByName("tracker");
-    for (i=0;i<trackers.length; i++) {
-      trackers[i].addEventListener('click', (e) => {
-        let trackerpanels = document.getElementsByName("trackerpanel");
-        for (j=0;j<trackerpanels.length;j++) {
-          //the panel content must contain a class that match relevant radio's id
-          if (trackerpanels[j].classList.contains(e.target.id)) {
-            trackerpanels[j].classList.remove("hidden");
-            tracker = Number(e.target.value);
-            console.log("tracker ", tracker);
-          } else trackerpanels[j].classList.add("hidden");
-        }
-      })
-    }
   </script>
 </html>

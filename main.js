@@ -1,4 +1,4 @@
-//require('electron-reload')(__dirname);    "electron-reload":"1.0.2",
+require('electron-reload')(__dirname);
 
 const electron = require('electron')
 // Module to control application life.
@@ -23,7 +23,7 @@ function createWindow () {
   mainWindow.loadURL(`file://${__dirname}/index.html`)
 
   // Open the DevTools.
-  //mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
@@ -84,4 +84,27 @@ ipc.on('document-ready', (e) => {
       savedConfig = JSON.parse(data);
       e.sender.send('config-available', savedConfig)
   });
+})
+
+
+//following functions are not used, just demo for it's capacity to open another window inside app
+function createExternalUrlWindow (anUrl) {
+  // Create the browser window.
+  let aWindow = new BrowserWindow({width: 800, height: 600})
+
+  // and load the index.html of the app.
+  aWindow.loadURL(anUrl)
+
+
+  // Emitted when the window is closed.
+  aWindow.on('closed', function () {
+    // Dereference the window object, usually you would store windows
+    // in an array if your app supports multi windows, this is the time
+    // when you should delete the corresponding element.
+    aWindow = null
+  })
+}
+//this is triggered from a renderer by issueing ipc.send(openExternalUrl, anUrl)
+ipc.on('openExternalUrl', (e, anUrl) => {
+  createExternalUrlWindow(anUrl);
 })

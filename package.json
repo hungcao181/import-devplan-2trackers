@@ -4,7 +4,9 @@
   "description": "A simple yet efficient importer for transfering dev plan into tracker tools",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "buildwin64": "electron-packager . hellfire --platform=win32 arch=x64",
+    "archivewin64": "asar pack ./hellfire-win32-x64/resources/app ./hellfire-win32-x64/resources/app.asar"
   },
   "repository": {
     "type": "git",
@@ -23,12 +25,16 @@
     "url": "https://github.com/hungcao181/import-devplan-2trackers/issues"
   },
   "homepage": "https://github.com/hungcao181/import-devplan-2trackers#readme",
-  "devDependencies": {
-    "electron": "^1.3.4",
+  "dependencies": {
     "async": "^1.5.0",
+    "electron": "^1.3.4",
     "jquery-deferred": "^0.3.0",
     "node-gitlab": "^1.2.1",
     "pivotaltracker": "^0.1.4"
-
+  },  
+  "devDependencies": {
+    "asar": "^0.12.3",
+    "electron-reload":"1.0.2",
+    "electron-packager": "^8.1.0"
   }
 }
