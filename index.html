@@ -168,8 +168,8 @@ user get access using user/pass instead of token
   </body>
   <script>
     // You can also require other files to run in this process
-    require('./renderer.js');
-    let importer = require('./importer.js');
+    require('./importer/renderer.js');
+    let importer = require('./importer/index.js');
     let tracker = 1;
     const ipc = require('electron').ipcRenderer;    
     const shell = require('electron').shell
