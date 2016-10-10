@@ -5,8 +5,8 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "buildwin64": "electron-packager . hellfire --platform=win32 arch=x64",
-    "archivewin64": "asar pack ./hellfire-win32-x64/resources/app ./hellfire-win32-x64/resources/app.asar"
+    "buildwin64": "electron-packager . hellfirer --platform=win32 arch=x64",
+    "archivewin64": "asar pack ./hellfirer-win32-x64/resources/app ./hellfirer-win32-x64/resources/app.asar"
   },
   "repository": {
     "type": "git",

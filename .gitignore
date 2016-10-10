@@ -7,7 +7,7 @@
 ## Directory-based project format:
 .idea/
 v0.1
-hellfire-win32-x64
+hellfire*-win32-x64
 asnethellfire-win32-x64
 ### OSX template
 .DS_Store
