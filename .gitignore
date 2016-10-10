@@ -28,7 +28,7 @@ tools/typings/*
 src/public/js
 src/public/app/**/*.js
 src/public/app/**/*.js.map
-
+build
 *.log
 *.secret
 *.cer
