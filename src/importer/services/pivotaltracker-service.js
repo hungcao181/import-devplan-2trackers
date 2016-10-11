@@ -7,8 +7,15 @@ var tracker  = require("pivotaltracker"),
 
 var async = require('async');
 var jQuery = require('jquery-deferred');
+let pivotaltracker = {};
+pivotaltracker.config = function (options) {
+    projectID = options.pivotaltracker.project,
+    projectStartDate = options.pivotaltracker.startdate || new Date(),
+    token = options.pivotaltracker.apitoken;
+    client = new tracker.Client({trackerToken:token});
+}
 
-module.exports = {
+export default pivotaltracker = {
     config: function (options) {
         projectID = options.pivotaltracker.project,
         projectStartDate = options.pivotaltracker.startdate || new Date(),
@@ -18,7 +25,7 @@ module.exports = {
     createMilestone: function (milestone) {
 
         var startDate = new Date(projectStartDate);
-        
+
         startDate.setTime( startDate.getTime() + parseInt(milestone.replace(/[^0-9]/g,'')) * 604800000 );
 
         var data = {
@@ -47,15 +54,15 @@ module.exports = {
                 df.reject();
             } else {
                 console.log('sprint:', story);
-                df.resolve(story ? story.id : null);                
+                df.resolve(story ? story.id : null);
             };
-        }); 
+        });
         return df.promise();
-        
+
     },
     createStory: function (milestone, newStory, done) {
         var client = new tracker.Client({trackerToken:token});
-        
+
         var data = {
             name: newStory.title,
             description: '',
@@ -73,7 +80,7 @@ module.exports = {
             //     description: 'wow, auto new story task!!'
             // }],
         };
-        
+
         client.project(projectID).stories.create(data, function(error, story) {
             console.log('story:', story? story.name : null);
             if (error) {

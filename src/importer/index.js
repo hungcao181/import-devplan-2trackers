@@ -1,37 +1,38 @@
 'use strict';
-var fs = require('fs');
-var data;
-var client;
+import fs from 'fs';
+import gitlabService from './services/gitlab-service.js';
+import pivotalService from './services/pivotaltracker-service.js';
 
 var async = require('async');
 var jQuery = require('jquery-deferred');
 
 let ipc;
-function importer (options) {
-    
+let data;
+let myService;
+export default function importer (options) {
+
     var answer = options.tracker;
     data = options.data;
     ipc = options.ipc;
     //we can input argument when run npm start and check process.argv[2] instead. Below is example of using readline
-    if (answer == 1 || answer == 0 || answer == null) {
-        
-        client = require('./services/pivotaltracker-service');
-        client.config(options);
-        loadDataByStructure();
-        
-    };
-    if (answer == 2)
-    {
-        client = require('./services/gitlab-service');
-        client.config(options);
+    switch (answer) {
+        case 1:
+            myService = pivotalService;
+            break;
+        case 2:
+            myService = gitlabService;
+            break;
+        default:
+            myService = null;
+            break;
+
+    }
+
+    if (myService) {
+        myService.config(options);
         loadDataByStructure();
     }
-    if (answer == 99) {
-        console.log('listing your gitlab project');
-        client = require('./services/gitlab-service');
-        client.config(options);
-        client.getProjects();
-    }
+
 }
 
 function loadDataByStructure() {
@@ -79,12 +80,10 @@ function processEpic(milestone, epic, done) {
 }
 
 function createMilestone(milestone) {
-    return client.createMilestone(milestone);
+    return myService.createMilestone(milestone);
 }
 
 function createStory(milestone, story, done) {
     // done();
-    client.createStory(milestone, story,done);
+    myService.createStory(milestone, story,done);
 }
-
-module.exports = importer;

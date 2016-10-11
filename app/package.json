@@ -1,0 +1,19 @@
+{
+  "name": "electron-boilerplate",
+  "productName": "Electron Boilerplate",
+  "description": "Starter for your Electron application",
+  "version": "0.0.0",
+  "author": "Mr. Gumby <mr.gumby@example.com>",
+  "copyright": "© 2016, Gumby inc.",
+  "homepage": "http://example.com",
+  "license": "MIT",
+  "main": "background.js",
+  "dependencies": {
+    "fs-jetpack": "^0.9.0",
+    "async": "^1.5.0",
+    "electron": "^1.3.4",
+    "jquery-deferred": "^0.3.0",
+    "node-gitlab": "^1.2.1",
+    "pivotaltracker": "^0.1.4"
+  }
+}

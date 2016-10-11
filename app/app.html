@@ -7,9 +7,15 @@
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
     <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap-theme.min.css">    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap-theme.min.css">
 
-    <link rel="stylesheet" href="./style.css">
+    <link href="stylesheets/main.css" rel="stylesheet" type="text/css">
+
+    <script src="helpers/context_menu.js"></script>
+    <script src="helpers/external_links.js"></script>
+
+    <script src="app.js"></script>
+
   </head>
   <body>
     <div class="container">
@@ -60,16 +66,16 @@
                 <input type="text" id="prjname" placeholder="pear/myblog" class="form-control" value="hungcao181/dmz">
               </div>
             </div>
-            <div class="form-group">            
+            <div class="form-group">
               <label for="gitlabtoken" class="col-sm-3 control-label"> Private Token</label>
               <div class="col-sm-9">
                 <input type="text" id="privatetoken" class="form-control" value="-EKo1s-MGxi3wy3dsG6Z">
                 <p class="form-control-static">Don't have a token yet? <a href="#" id="getgitlabtoken">Get new one here</a></p>
               </div>
-              
+
             </div>
             <div class="form-group hidden">
-              <label for="apiversion" class="col-sm-3 control-label">API Version</label> 
+              <label for="apiversion" class="col-sm-3 control-label">API Version</label>
               <div class="col-sm-9">
                 <input type="text" id="apiversion" value="/api/v3" class="form-control">
               </div>
@@ -98,20 +104,20 @@
 SPRINT #1
 
 EPIC:Analysis n Plan
-Developer analyze business requirements 
-Developer identify gaps in business requirements 
-Client clarify gaps in business requirements 
-Developer identify technical risks and solutions 
-Developer finalize development plan 
-Developer or Client provide access to project tracking 
-Developer initialize project tracking tool with the finalized development plan 
-Developer setup IM chat channel for daily communication 
+Developer analyze business requirements
+Developer identify gaps in business requirements
+Client clarify gaps in business requirements
+Developer identify technical risks and solutions
+Developer finalize development plan
+Developer or Client provide access to project tracking
+Developer initialize project tracking tool with the finalized development plan
+Developer setup IM chat channel for daily communication
 
 EPIC:Infrastructure
-Client provides access to source code repository 
-Developer setups development and staging environment 
-Developer initializes source code repository 
-Developer integrates key front-end frameworks required for the project 
+Client provides access to source code repository
+Developer setups development and staging environment
+Developer initializes source code repository
+Developer integrates key front-end frameworks required for the project
 Client provides art assets provide art assets
 
 SPRINT #2
@@ -124,7 +130,7 @@ user load stories from file
 user input/update stories on text area
 user save stories into file
 
-Epic: Push to remote trackers 
+Epic: Push to remote trackers
 user push data to Pivotal tracker
 user push data to Gitlab
 
@@ -142,7 +148,7 @@ user get access using user/pass instead of token
           </textarea>
           <p id="working-file" class="form-control-static"></p>
           <p><span id="importstatus" class="label label-success"></span></p>
-          
+
         </div>
       </div>
 
@@ -167,69 +173,6 @@ user get access using user/pass instead of token
     </div>
   </body>
   <script>
-    // You can also require other files to run in this process
-    require('./importer/renderer.js');
-    let importer = require('./importer/index.js');
-    let tracker = 1;
-    const ipc = require('electron').ipcRenderer;    
-    const shell = require('electron').shell
-
-    document.addEventListener('DOMContentLoaded', function() {
-      console.log("ready");
-
-      //inform the ready status to main (to load current setting) 
-      ipc.send('document-ready');
-
-      let pushButton = document.getElementById("push-button");
-      pushButton.addEventListener("click", (e) => {
-        let options = {pivotaltracker:{}, gitlab:{}};
-        options.tracker = tracker;
-        options.data = document.getElementById("data").value;
-        options.ipc = ipc;
-        switch (options.tracker) {
-          case 1: //pivotal tracker
-            options.pivotaltracker.project = document.getElementById("prjid").value;
-            options.pivotaltracker.apitoken = document.getElementById("pttoken").value;
-            break;
-          case 2: //gitlab
-            options.gitlab.project = document.getElementById("prjname").value;
-            console.log("get project ", options.gitlab.project);
-            options.gitlab.privatetoken = document.getElementById("privatetoken").value;
-            options.gitlab.apiversion = document.getElementById("apiversion").value;
-            options.gitlab.hostname = document.getElementById("hostname").value;
-            options.gitlab.selfhosted = document.getElementById("selfhosted").value;
-            break;
-        }
-        // ipc.send('doimport', options);
-        importer(options);
-      });
-
-      document.getElementById("getpttoken").addEventListener('click', (e) => {
-        shell.openExternal('https://www.pivotaltracker.com/profile');
-      });
-
-      document.getElementById("getgitlabtoken").addEventListener('click', (e) => {
-        shell.openExternal('https://gitlab.com/profile/personal_access_tokens');
-      });
-
-      //hide/show the un/selected tracker panel content
-      //set global tracker variant according to selected tracker tool
-      let trackers = document.getElementsByName("tracker");
-      for (i=0;i<trackers.length; i++) {
-        trackers[i].addEventListener('click', (e) => {
-          let trackerpanels = document.getElementsByName("trackerpanel");
-          for (j=0;j<trackerpanels.length;j++) {
-            //the panel content must contain a class that match relevant radio's id
-            if (trackerpanels[j].classList.contains(e.target.id)) {
-              trackerpanels[j].classList.remove("hidden");
-              tracker = Number(e.target.value);
-              console.log("tracker ", tracker);
-            } else trackerpanels[j].classList.add("hidden");
-          }
-        })
-      }
-
-    });
 
   </script>
 </html>

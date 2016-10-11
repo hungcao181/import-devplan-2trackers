@@ -1,16 +1,15 @@
-//var secret = require('../config/client.secret');
 var secret = {gitlab: {}};
 
-var gitlab = require('node-gitlab');
+var nodeGitlab = require('node-gitlab');
 var https = require('https');
-var fs = require('fs');
-var async = require('async');
+// var fs = require('fs');
+// var async = require('async');
 var jQuery = require('jquery-deferred');
 var apiPath;
 var client;
 
 
-module.exports = {
+var gitlabService = {
     config: function (options) {
 
         secret.gitlab.privatetoken = options.gitlab.privatetoken;
@@ -28,26 +27,26 @@ module.exports = {
         if (secret.gitlab.selfhosted) {
             process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; //resolve_selfSigned_issue
         };
-        
 
-        client = gitlab.create({
+
+        client = nodeGitlab.create({
             api: 'https://' + (secret.gitlab.selfhosted ? secret.gitlab.selfhosted : secret.gitlab.hostname) + secret.gitlab.apiversion,
             privateToken: secret.gitlab.privatetoken,
             requestTimeout: 15000,
-        });    
+        });
     },
     createMilestone: function (milestone) {
         var startDate = new Date(secret.gitlab.projectStartDate);
         startDate.setTime( startDate.getTime() + parseInt(milestone.replace(/[^0-9]/g,'')) * 604800000 );
-        
+
         var dateStr = startDate.getFullYear() + '-' + (startDate.getMonth() + 1) + '-' + startDate.getDate();
-        
+
         console.log('date ',dateStr);
         console.log(startDate);
         var aMilestone = {
             id: secret.gitlab.projectID,
             title: 'Sprint ' + milestone,
-            description: '', 
+            description: '',
             // due_date: '2016-11-11',
             due_date: dateStr,
         }
@@ -62,7 +61,7 @@ module.exports = {
                 df.resolve(data.id);
             }
         });
-        return df.promise();  
+        return df.promise();
     },
     createStory: function (milestoneID, newStory, done) {
         client.issues.create(
@@ -72,7 +71,7 @@ module.exports = {
                 description: '',
                 labels: newStory.labels,
                 milestone_id: milestoneID
-            }, 
+            },
             function(err, story) {
                 if (err) {
                     console.log(err);
@@ -99,15 +98,16 @@ module.exports = {
         var req = https.request(options, function(res) {
             console.log("statusCode: ", res.statusCode);
             console.log("headers: ", res.headers);
-            
+
             res.on('data', function(d) {
                 console.log('data:', d);
             });
         });
         req.end();
-        
+
         req.on('error', function(e) {
         console.error(e);
-        });    
+        });
     },
 }
+export default gitlabService;
