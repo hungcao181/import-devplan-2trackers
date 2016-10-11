@@ -2,9 +2,8 @@
 // be executed in the renderer process for that window.
 // All of the Node.js APIs are available in this process.
 'use strict';
-var fs = require('fs');
-const ipc = require('electron').ipcRenderer;
-const shell = require('electron').shell
+import fs from 'fs';
+import {ipcRenderer as ipc, shell} from 'electron';
 
 import importer from './index.js';
 let tracker = 1;

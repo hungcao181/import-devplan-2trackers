@@ -1,4 +1,4 @@
-var fs = require('fs');
+import fs from 'fs';
 
 export default function (ipc, dialog) {
     ipc.on('open-file-dialog', function (e) {

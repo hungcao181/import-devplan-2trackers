@@ -3,8 +3,8 @@ import fs from 'fs';
 import gitlabService from './services/gitlab-service.js';
 import pivotalService from './services/pivotaltracker-service.js';
 
-var async = require('async');
-var jQuery = require('jquery-deferred');
+import async from 'async';
+import jQuery from 'jquery-deferred';
 
 let ipc;
 let data;
