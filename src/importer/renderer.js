@@ -16,7 +16,7 @@ let dataArea;
 let workingFile;
 let saveButton;
 let saveasButton;
-let cancelButton;
+let stopButton;
 
 ipc.on('selected-file', function (e, path) {
     if (path) {
@@ -49,7 +49,7 @@ ipc.on('config-available', (e, savedConfig) => {
 
 ipc.on('updateimportstatus', (e, status) => {
     document.getElementById('importstatus').innerHTML = status.description || "No description";
-    if (status.code=='start') document.getElementById('cancel-button').classList.remove('hidden');
+    if (status.code=='start') document.getElementById('stop-button').classList.remove('hidden');
 })
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -62,13 +62,13 @@ document.addEventListener('DOMContentLoaded', function() {
     workingFile = document.getElementById("working-file");
     saveButton = document.getElementById("save-button");
     saveasButton = document.getElementById("saveas-button");
-    cancelButton = document.getElementById('cancel-button');
+    stopButton = document.getElementById('stop-button');
     //inform the ready status to main (to load current setting)
     ipc.send('document-ready');
 
-    cancelButton.addEventListener('click', (e) => {
-        ipc.send('cancel-import');
-        cancelButton.classList.add('hidden');
+    stopButton.addEventListener('click', (e) => {
+        ipc.send('stop-import');
+        stopButton.classList.add('hidden');
     });
 
     loadButton.addEventListener('click', (e) => {
@@ -123,6 +123,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById("getgitlabtoken").addEventListener('click', (e) => {
         shell.openExternal('https://gitlab.com/profile/personal_access_tokens');
+    });
+
+    document.getElementById("is-selfhosted").addEventListener('click', (e) => {
+        document.getElementById("selfhosted").disabled = !Boolean(e.target.checked);
     });
 
     //hide/show the un/selected tracker panel content

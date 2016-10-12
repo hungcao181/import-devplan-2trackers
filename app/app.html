@@ -87,9 +87,9 @@
               </div>
             </div>
             <div class="form-group">
-              <label for="sefthosted" class="col-sm-3 control-label">Selfhosted? Domain</label>
+              <label for="selfhosted" class="col-sm-3 control-label">Selfhosted <input type="checkbox" id="is-selfhosted"> Domain</label>
               <div class="col-sm-9">
-                <input type="text" id="selfhosted" placeholder="gitlab.asoft-python.com" class="form-control">
+                <input type="text" id="selfhosted" placeholder="e.g. gitlab.asoft-python.com, default is gitlab.com" class="form-control" disabled>
               </div>
             </div>
           </form>
@@ -153,7 +153,7 @@ user get access using user/pass instead of token
                     <span id="importstatus" class="label label-success"></span>
                 </div>
                 <div class="col col-sm-2">
-                    <button id="cancel-button" class="btn btn-danger hidden">Cancel</button>
+                    <button id="stop-button" class="btn btn-danger hidden">Stop</button>
                 </div>
             </div>
           </div>
