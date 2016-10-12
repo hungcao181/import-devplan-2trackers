@@ -63,7 +63,10 @@ function processSprint(sprint, done) {
                 }
             );
         }
-    );
+    ).fail(function (err) {
+        console.log('get this ', err);
+        if (ipc && (typeof(ipc.send) == 'function')) ipc.send('importstatus', {code:'error',description:String(err).includes('has already been taken')?'has already been taken':'Something wrong'});
+    });
 }
 
 function processEpic(milestone, epic, done) {

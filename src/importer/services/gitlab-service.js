@@ -19,13 +19,13 @@ var gitlabService = {
 
         secret.gitlab.projectID = encodeURIComponent(options.gitlab.project);
 
-        console.log("name ",options.gitlab.project);
-        console.log("encoded ",secret.gitlab.projectID);
+        console.log('name ',options.gitlab.project);
+        console.log('encoded ',secret.gitlab.projectID);
 
         secret.gitlab.projectStartDate = options.startdate || new Date();
 
         if (secret.gitlab.selfhosted) {
-            process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; //resolve_selfSigned_issue
+            process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'; //resolve_selfSigned_issue
         };
 
 
@@ -50,13 +50,26 @@ var gitlabService = {
             // due_date: '2016-11-11',
             due_date: dateStr,
         }
-        console.log("a milestone ", aMilestone);
+        console.log('a milestone ', aMilestone);
         var df = jQuery.Deferred();
         client.milestones.create(aMilestone, function (err, data) {
             console.log('milestone: ', data);
             if (err) {
                 console.log(err);
-                df.reject();
+                //if the issue is 'mistone exists' then try to get the current id
+                client.milestones.list({id: secret.gitlab.projectID}, function (listErr, milestones) {
+                    if (listErr) {
+                        df.reject(listErr);
+                    } else {
+                        let existItem = milestones.find(function(element) {
+                            return (element.title.trim() == aMilestone.title.trim());
+                        });
+                        if (existItem) {
+                            df.resolve(existItem.id);
+                        } else df.reject(err);
+                    }
+                })
+
             } else {
                 df.resolve(data.id);
             }
@@ -96,8 +109,8 @@ var gitlabService = {
             // rejectUnauthorized: false,
         };
         var req = https.request(options, function(res) {
-            console.log("statusCode: ", res.statusCode);
-            console.log("headers: ", res.headers);
+            console.log('statusCode: ', res.statusCode);
+            console.log('headers: ', res.headers);
 
             res.on('data', function(d) {
                 console.log('data:', d);
