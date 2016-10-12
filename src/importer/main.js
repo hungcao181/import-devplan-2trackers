@@ -57,7 +57,7 @@ export default function (ipc, dialog) {
         //importer(options);
     })
 
-    ipc.on('importsprintdone', (e) => {
-        e.sender.send('updateimportstatus');
+    ipc.on('importstatus', (e, status) => {
+        e.sender.send('updateimportstatus', status.description);
     })
 }

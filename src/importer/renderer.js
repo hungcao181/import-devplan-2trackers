@@ -8,6 +8,15 @@ import {ipcRenderer as ipc, shell} from 'electron';
 import importer from './index.js';
 let tracker = 1;
 
+let pushButton;
+let trackers;
+
+let loadButton;
+let dataArea;
+let workingFile;
+let saveButton;
+let saveasButton;
+
 ipc.on('selected-file', function (e, path) {
     if (path) {
         let fileName = path[0];
@@ -37,20 +46,20 @@ ipc.on('config-available', (e, savedConfig) => {
     }
 })
 
-ipc.on('updateimportstatus', (e) => {
-    document.getElementById('importstatus').innerHTML = "Import Successfully!";
+ipc.on('updateimportstatus', (e, description) => {
+    document.getElementById('importstatus').innerHTML = description || "No description";
 })
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log("ready");
-    let pushButton = document.getElementById("push-button");
-    let trackers = document.getElementsByName("tracker");
+    pushButton = document.getElementById("push-button");
+    trackers = document.getElementsByName("tracker");
 
-    let loadButton = document.getElementById("load-button");
-    let dataArea = document.getElementById("data");
-    let workingFile = document.getElementById("working-file");
-    let saveButton = document.getElementById("save-button");
-    let saveasButton = document.getElementById("saveas-button");
+    loadButton = document.getElementById("load-button");
+    dataArea = document.getElementById("data");
+    workingFile = document.getElementById("working-file");
+    saveButton = document.getElementById("save-button");
+    saveasButton = document.getElementById("saveas-button");
 
     //inform the ready status to main (to load current setting)
     ipc.send('document-ready');

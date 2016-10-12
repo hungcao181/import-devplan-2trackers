@@ -41,8 +41,7 @@ function loadDataByStructure() {
         sprints,
         processSprint,
         function(err) {
-            if (err) console.log('error ',err);
-            if (ipc && (typeof(ipc.send) == 'function')) ipc.send('importsprintdone');
+            if (ipc && (typeof(ipc.send) == 'function')) ipc.send('importstatus', err?{code:'error',description:'Something wrong'}:{code:'importdone',description:'Plan Imported Successfully'});
         }
     );
 }
@@ -50,14 +49,16 @@ function loadDataByStructure() {
 function processSprint(sprint, done) {
     var epics = sprint.split(/EPIC[ ]*:?[ ]*/i).filter(function(e) { return e != ''; });
     var sprintName = epics.shift();//.replace(/(?:\r\n|\r|\n)/g, '');
-    console.log(sprintName);
+
+    if (ipc && (typeof(ipc.send) == 'function')) ipc.send('importstatus', {code: 'start', description: sprintName});
+
     jQuery.when(createMilestone(sprintName)).done(
         function(milestoneID) {
             async.eachSeries(
                 epics.reverse(),
                 processEpic.bind(null, milestoneID), //thanks this post http://stackoverflow.com/questions/20882892/pass-extra-argument-to-async-map
                 function(err) {
-                    if (err) console.log('error ',err);
+                    if (ipc && (typeof(ipc.send) == 'function')) ipc.send('importstatus', err?{code:'error',description:'Something wrong'}:{code:'sprintdone',description:'Sprint Imported Successfully'});
                     done();
                 }
             );
@@ -68,12 +69,12 @@ function processSprint(sprint, done) {
 function processEpic(milestone, epic, done) {
     var stories = epic.split(/\r?\n/).map(function(s) {return s.trim()}).filter(function(story){ return story != '' });
     var label = stories.shift();//first item is epic name
-    // console.log('stories ', stories);
+
     async.eachSeries(
         stories.reverse().map(function(s) {return {'title':s, 'labels': [label]}}),
         createStory.bind(null, milestone),
         function(err) {
-            if (err) console.log('error ',err);
+            if (ipc && (typeof(ipc.send) == 'function')) ipc.send('importstatus', err?{code:'error',description:'Something wrong'}:{code:'epicdone',description:'Epic Imported Successfully'});
             done();
         }
     );
@@ -84,6 +85,6 @@ function createMilestone(milestone) {
 }
 
 function createStory(milestone, story, done) {
-    // done();
+    if (ipc && (typeof(ipc.send) == 'function')) ipc.send('importstatus',{code:'storydone',description:story.title});
     myService.createStory(milestone, story,done);
 }
