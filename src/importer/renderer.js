@@ -16,6 +16,7 @@ let dataArea;
 let workingFile;
 let saveButton;
 let saveasButton;
+let cancelButton;
 
 ipc.on('selected-file', function (e, path) {
     if (path) {
@@ -46,8 +47,9 @@ ipc.on('config-available', (e, savedConfig) => {
     }
 })
 
-ipc.on('updateimportstatus', (e, description) => {
-    document.getElementById('importstatus').innerHTML = description || "No description";
+ipc.on('updateimportstatus', (e, status) => {
+    document.getElementById('importstatus').innerHTML = status.description || "No description";
+    if (status.code=='start') document.getElementById('cancel-button').classList.remove('hidden');
 })
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -60,12 +62,16 @@ document.addEventListener('DOMContentLoaded', function() {
     workingFile = document.getElementById("working-file");
     saveButton = document.getElementById("save-button");
     saveasButton = document.getElementById("saveas-button");
-
+    cancelButton = document.getElementById('cancel-button');
     //inform the ready status to main (to load current setting)
     ipc.send('document-ready');
 
+    cancelButton.addEventListener('click', (e) => {
+        ipc.send('cancel-import');
+        cancelButton.classList.add('hidden');
+    });
 
-    loadButton.addEventListener('click', function (e) {
+    loadButton.addEventListener('click', (e) => {
         ipc.send('open-file-dialog');
     });
 

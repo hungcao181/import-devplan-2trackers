@@ -9,11 +9,14 @@ import jQuery from 'jquery-deferred';
 let ipc;
 let data;
 let myService;
+let pleaseStop;
+
 export default function importer (options) {
 
     var answer = options.tracker;
     data = options.data;
     ipc = options.ipc;
+    pleaseStop = false;
     //we can input argument when run npm start and check process.argv[2] instead. Below is example of using readline
     switch (answer) {
         case 1:
@@ -33,6 +36,14 @@ export default function importer (options) {
         loadDataByStructure();
     }
 
+    if (ipc) {
+        ipc.on('please-stop', (e) => {
+            pleaseStop = true;
+            ipc = null;
+            myService = null;
+            data = null;
+        })
+    }
 }
 
 function loadDataByStructure() {
@@ -84,10 +95,12 @@ function processEpic(milestone, epic, done) {
 }
 
 function createMilestone(milestone) {
+    if (pleaseStop) return;
     return myService.createMilestone(milestone);
 }
 
 function createStory(milestone, story, done) {
+    if (pleaseStop) return;
     if (ipc && (typeof(ipc.send) == 'function')) ipc.send('importstatus',{code:'storydone',description:story.title});
     myService.createStory(milestone, story,done);
 }

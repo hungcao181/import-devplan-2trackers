@@ -58,6 +58,10 @@ export default function (ipc, dialog) {
     })
 
     ipc.on('importstatus', (e, status) => {
-        e.sender.send('updateimportstatus', status.description);
+        e.sender.send('updateimportstatus', status);
+    })
+
+    ipc.on('cancel-import', (e) => {
+        e.sender.send('please-stop', 'please stop due to user\'s request');
     })
 }

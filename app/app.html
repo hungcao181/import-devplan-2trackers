@@ -146,9 +146,17 @@ Fix gitlab label existing issue
 Show the importing progress
 user get access using user/pass instead of token
           </textarea>
-          <p id="working-file" class="form-control-static"></p>
-          <p><span id="importstatus" class="label label-success"></span></p>
-
+          <div class="notification section">
+            <p id="working-file" class="form-control-static"></p>
+            <div class="row">
+                <div class="col col-sm-10">
+                    <span id="importstatus" class="label label-success"></span>
+                </div>
+                <div class="col col-sm-2">
+                    <button id="cancel-button" class="btn btn-danger hidden">Cancel</button>
+                </div>
+            </div>
+          </div>
         </div>
       </div>
 
