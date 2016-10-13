@@ -29,7 +29,7 @@ You can create Windows installer only when running on Windows, the same is true 
 
 ### Example text-based plan
 > To try import, input your project name or id, your token, and just copy below to text area and push:
-```
+`
 SPRINT #1
 
 EPIC:Analysis n Plan
@@ -54,7 +54,7 @@ user save stories into file
 Epic: Push to remote trackers
 user push data to Pivotal tracker
 user push data to Gitlab
-```
+`
 
 ### Limitation / Known issues
 * You just only add your plan as a whole in one round.
