@@ -19,6 +19,39 @@ An installer for your platform will be found in *dist* folder.
 
 You can create Windows installer only when running on Windows, the same is true for Linux and OSX. So to generate all three installers you need all three operating systems.
 
+### A note about input text-based plan
+
+* The plan should be in form of hierarchical structure like this: Sprint > Epic > Tickets, sprint by sprint
+* Sprint line are in format: <'Sprint'+ delimiter + Sprint name>
+* Epic line are in format: <'Epic'+ delimiter + Epic name>
+* Eelimiter can be space or semi colon
+* Sprint name should be number or contain number (i.g '2' or '#2' or 'week2') that represent the order it will be worked, start from 1
+* Please find example plan as below, just copy this into text area and push:
+
+SPRINT #1
+
+EPIC:Analysis n Plan
+Developer analyze business requirements
+Developer identify gaps in business requirements
+
+EPIC:Infrastructure
+Client provides access to source code repository
+Developer setups development and staging environment
+
+SPRINT #2
+Epic: settings management
+user choose service to work with (Pivotal tracker / Gitlab.com / SelfHosted Gitlab)
+user input setting for selected tracker
+
+Epic: Data management
+user load stories from file
+user input/update stories on text area
+user save stories into file
+
+Epic: Push to remote trackers
+user push data to Pivotal tracker
+user push data to Gitlab
+
 ### Limitation / Known issues
 * You just only add your plan as a whole in one round.
 * You can stop current process. However, already imported sprints/epics/tickets are intact (no rollback). Next push action will start from the begining. 
