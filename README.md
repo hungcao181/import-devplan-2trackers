@@ -21,7 +21,7 @@ You can create Windows installer only when running on Windows, the same is true 
 
 ### A note about input text-based plan
 
-* The plan should be in form of hierarchical structure like this: Sprint > Epic > Tickets, sprint by sprint
+* The plan should be in form of hierarchical structure like this: Sprint > Epic > Tickets. Each type are on it's own line.
 * Sprint line are in format: <'Sprint'+ delimiter + Sprint name>
 * Epic line are in format: <'Epic'+ delimiter + Epic name>
 * Eelimiter can be space or semi colon
@@ -67,6 +67,7 @@ user push data to Gitlab
     *item create/remove project
     *item Add/delete group
     *item Add/delete user to project
+### all my import code are under folder src/importer
 
 ## This project make use of following awesome projects:
 * [Electron boilerplate: szwacz's awesome boilerplate](https://github.com/szwacz/electron-boilerplate).
