@@ -13,7 +13,7 @@ This currently support: Pivotal Tracker and Gitlab (both gitlab.com and selfhost
 > npm start
 
 ### To make a installer for your platform, run command:
-.> npm run release
+> npm run release
 
 An installer for your platform will be found in *dist* folder.
 
@@ -31,9 +31,9 @@ You can create Windows installer only when running on Windows, the same is true 
 * Allow user to load existing project's tickets
 * Allow user to edit/delete existing project's tickets
 * Tracker admin tool: Allow admin user to:
-*item create/remove project
-*item Add/delete group
-*item Add/delete user to project
+    *item create/remove project
+    *item Add/delete group
+    *item Add/delete user to project
 
 ## This project make use of following awesome projects:
 * [Electron boilerplate: szwacz's awesome boilerplate](https://github.com/szwacz/electron-boilerplate).
