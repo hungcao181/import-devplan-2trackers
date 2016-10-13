@@ -28,7 +28,8 @@ You can create Windows installer only when running on Windows, the same is true 
 * Sprint name should be number or contain number (i.g '2' or '#2' or 'week2') that represent the order it will be worked, start from 1
 
 ### Example text-based plan
-> To try import, input your project name or id, your token, and just copy below to text area and push:
+
+To try import, input your project name or id, your token, and just copy below to text area and push:
 
     SPRINT #1
 
@@ -72,7 +73,7 @@ You can create Windows installer only when running on Windows, the same is true 
     *item Add/delete user to project
 ### all my import code are under folder src/importer
 
-## This project make use of following awesome projects:
+## This project make directly use of following awesome projects:
 * [Electron boilerplate: szwacz's awesome boilerplate](https://github.com/szwacz/electron-boilerplate).
 * [Node.js wrapper for the Gitlab REST API](https://github.com/repo-utils/gitlab)
 * [Node.js wrapper for the Pivotal Tracker REST API](https://github.com/generalui/pivotaltracker)
