@@ -40,7 +40,8 @@ EPIC:Infrastructure
 Client provides access to source code repository
 Developer setups development and staging environment
 
-SPRINT #2
+`SPRINT #2
+
 Epic: settings management
 user choose service to work with (Pivotal tracker / Gitlab.com / SelfHosted Gitlab)
 user input setting for selected tracker
@@ -52,7 +53,7 @@ user save stories into file
 
 Epic: Push to remote trackers
 user push data to Pivotal tracker
-user push data to Gitlab
+user push data to Gitlab`
 
 ### Limitation / Known issues
 * You just only add your plan as a whole in one round.
