@@ -3,10 +3,12 @@ This is made to build a desktop app to import text based development plan into t
 
 This currently support: Pivotal Tracker and Gitlab (both gitlab.com and selfhosted domain)
 
-### To start in development, open your terminal:
-> git clone https://github.com/hungcao181/import-devplan-2trackers.git
+### [To get an installer for your platform go to](https://www.dropbox.com/sh/yxes2qbcuh1n293/AACwm6hohD85-r76imCSDgbDa?dl=0)
 
-> cd electron-boilerplate
+### To start in development, open your terminal:
+> git clone git@gitlab.asoft-python.com:g-hungcao/electron-training.git
+
+> cd electron-training
 
 > npm install
 
