@@ -19,14 +19,16 @@ An installer for your platform will be found in *dist* folder.
 
 You can create Windows installer only when running on Windows, the same is true for Linux and OSX. So to generate all three installers you need all three operating systems.
 
-### A note about input text-based plan
+### An explaination for required format of your text-based plan
 
 * The plan should be in form of hierarchical structure like this: Sprint > Epic > Tickets. Each type are on it's own line.
 * Sprint line are in format: <'Sprint'+ delimiter + Sprint name>
 * Epic line are in format: <'Epic'+ delimiter + Epic name>
 * Eelimiter can be space or semi colon
 * Sprint name should be number or contain number (i.g '2' or '#2' or 'week2') that represent the order it will be worked, start from 1
-* Please find example plan as below, just copy this into text area and push:
+
+### example plan
+> To try import, input your project name or id, your token, and just copy below to text area and push:
 
 SPRINT #1
 
