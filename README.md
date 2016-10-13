@@ -27,9 +27,9 @@ You can create Windows installer only when running on Windows, the same is true 
 * Eelimiter can be space or semi colon
 * Sprint name should be number or contain number (i.g '2' or '#2' or 'week2') that represent the order it will be worked, start from 1
 
-### example plan
+### Example text-based plan
 > To try import, input your project name or id, your token, and just copy below to text area and push:
-
+```
 SPRINT #1
 
 EPIC:Analysis n Plan
@@ -40,7 +40,7 @@ EPIC:Infrastructure
 Client provides access to source code repository
 Developer setups development and staging environment
 
-`SPRINT #2
+SPRINT #2
 
 Epic: settings management
 user choose service to work with (Pivotal tracker / Gitlab.com / SelfHosted Gitlab)
@@ -53,7 +53,8 @@ user save stories into file
 
 Epic: Push to remote trackers
 user push data to Pivotal tracker
-user push data to Gitlab`
+user push data to Gitlab
+```
 
 ### Limitation / Known issues
 * You just only add your plan as a whole in one round.
